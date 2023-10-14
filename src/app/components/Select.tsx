@@ -3,13 +3,13 @@
 import * as Select from "@radix-ui/react-select";
 import React from "react";
 
-interface Option {
-  value: string;
+export interface SelectOption<V = void> {
+  value: V extends string ? V : string;
   label: string;
 }
 
 interface Props extends Select.SelectProps {
-  options: Option[];
+  options: SelectOption[];
 }
 
 const SelectField = ({ options, value, onValueChange }: Props) => {
