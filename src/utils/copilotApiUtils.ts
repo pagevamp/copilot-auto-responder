@@ -1,6 +1,7 @@
 const BaseApiURL = 'https://api-beta.copilot.com/v1'
 
-type MeResponse = {
+export type MeResponse = {
+    id: string,
     givenName: string
     familyName: string
     email: string

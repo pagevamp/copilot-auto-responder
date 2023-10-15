@@ -1,10 +1,10 @@
 -- CreateEnum
-CREATE TYPE "Type" AS ENUM ('enabled', 'disabled', 'within_working_hours');
+CREATE TYPE "SettingType" AS ENUM ('enabled', 'disabled', 'within_working_hours');
 
 -- CreateTable
 CREATE TABLE "Setting" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "type" "Type" NOT NULL,
+    "type" "SettingType" NOT NULL,
     "workingHours" JSONB,
     "senderId" UUID NOT NULL,
     "message" TEXT,
