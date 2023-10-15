@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+enum Type {
+  ENABLED @map("enabled")
+  DISABLED @map("disabled")
+  WITHIN_WORKING_HOURS @map("within_working_hours")
+}
+
+model Setting {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type Type
+  workingHours Json?	@db.JsonB
+  senderId  String @db.Uuid @unique
+  message String?
+  createdAt DateTime @db.Timestamptz() @default(now()) @ignore
+  updatedAt DateTime @updatedAt @ignore
+}
