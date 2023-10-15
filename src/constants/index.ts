@@ -55,12 +55,12 @@ export enum HOUR {
 export const DEFAULT_START_HOUR = HOUR["9AM"];
 export const DEFAULT_END_HOUR = HOUR["5PM"];
 
-export const HOURS_SELECT_OPTIONS: SelectOption[] = Object.values(HOUR).map(
-  (hour) => ({
-    label: hour,
-    value: hour,
-  })
-);
+export const HOURS_SELECT_OPTIONS: SelectOption<HOUR>[] = Object.values(
+  HOUR
+).map((hour) => ({
+  label: hour,
+  value: hour,
+}));
 
 export interface SelectedDay {
   day: DAY;

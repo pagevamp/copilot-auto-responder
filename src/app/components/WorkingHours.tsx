@@ -1,7 +1,7 @@
-import { DAY, HOURS_SELECT_OPTIONS, SelectedDay } from "@/constants";
-import SelectField from "./Select";
 import { Controller } from "react-hook-form";
-import Days from "./Days";
+
+import SelectField from "./Select";
+import { DAY, HOUR, HOURS_SELECT_OPTIONS, SelectedDay } from "@/constants";
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -22,30 +22,36 @@ const WorkingHours = ({ selectedDays }: Props) => {
         return (
           <li key={day} className="flex items-center mb-4">
             <span className="capitalize flex-1">{day}</span>
-            <Controller
-              name={`selectedDays[${selectedDayIndex}].startHour`}
-              render={({ field: { onChange, value } }) => (
-                <SelectField
-                  value={value}
-                  options={HOURS_SELECT_OPTIONS}
-                  onValueChange={(value: string) => {
-                    onChange(value);
-                  }}
-                />
-              )}
-            />
-            <Controller
-              name={`selectedDays[${selectedDayIndex}].startHour`}
-              render={({ field: { onChange, value } }) => (
-                <SelectField
-                  value={value}
-                  options={HOURS_SELECT_OPTIONS}
-                  onValueChange={(value: string) => {
-                    onChange(value);
-                  }}
-                />
-              )}
-            />
+            <div className="w-1/4 min-w-[100px] max-w-[200px]">
+              <Controller
+                name={`selectedDays[${selectedDayIndex}].startHour`}
+                render={({ field: { onChange, value } }) => (
+                  <SelectField<HOUR>
+                    value={value}
+                    options={HOURS_SELECT_OPTIONS}
+                    className="rounded-tr-none rounded-br-none border-r-0"
+                    onValueChange={(value: string) => {
+                      onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <div className="w-1/4 min-w-[100px] max-w-[200px]">
+              <Controller
+                name={`selectedDays[${selectedDayIndex}].startHour`}
+                render={({ field: { onChange, value } }) => (
+                  <SelectField<HOUR>
+                    value={value}
+                    options={HOURS_SELECT_OPTIONS}
+                    className="rounded-tl-none rounded-bl-none"
+                    onValueChange={(value: string) => {
+                      onChange(value);
+                    }}
+                  />
+                )}
+              />
+            </div>
             <span></span>
           </li>
         );

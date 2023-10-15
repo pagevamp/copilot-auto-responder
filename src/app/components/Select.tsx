@@ -8,16 +8,23 @@ export interface SelectOption<V = void> {
   label: string;
 }
 
-interface Props extends Select.SelectProps {
-  options: SelectOption[];
+interface Props<V> extends Select.SelectProps {
+  value: V extends string ? V : string;
+  options: SelectOption<V>[];
+  className?: string;
 }
 
-const SelectField = ({ options, value, onValueChange }: Props) => {
+const SelectField = <V,>({
+  options,
+  value,
+  onValueChange,
+  className = "",
+}: Props<V>) => {
   const selectedOption = options.find((option) => option.value === value);
   return (
     <Select.Root value={value} onValueChange={onValueChange}>
       <Select.Trigger
-        className="inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-white text-violet11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none"
+        className={`w-full flex items-center justify-between border border-gray-300 rounded-md px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-transparent text-violet11 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none ${className}`}
         aria-label="Food"
       >
         <Select.Value
