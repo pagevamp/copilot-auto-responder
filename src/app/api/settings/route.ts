@@ -1,7 +1,7 @@
 import { PrismaClient, SettingType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { SettingRequestSchema, SettingResponseSchema } from '@/types/setting';
-import { errorHandler, ErrorResponse, getCurrentUser } from '@/utils/common';
+import { errorHandler, getCurrentUser } from '@/utils/common';
 
 export async function GET(request: NextRequest) {
   const prisma = new PrismaClient();
