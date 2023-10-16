@@ -7,8 +7,6 @@ export function errorHandler(message: string, status: number = 200) {
   })
 }
 
-export type ErrorResponse = NextResponse<{ message: string; }>;
-
 export async function getCurrentUser(): Promise<MeResponse> {
   if (!process.env.COPILOT_API_KEY) {
     throw new Error('Copilot API key is not set.');
