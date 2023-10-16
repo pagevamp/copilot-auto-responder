@@ -15,6 +15,7 @@ export const SettingRequestSchema = z.object({
   workingHours: WorkingHoursSchema.optional(),
   message: z.string().optional()
 });
+export type SettingRequest = z.infer<typeof SettingRequestSchema>;
 
 export const SettingResponseSchema = z.object({
   id: z.string(),
@@ -23,3 +24,4 @@ export const SettingResponseSchema = z.object({
   senderId: z.string().uuid(),
   message: z.string().optional()
 });
+export type SettingResponse = z.infer<typeof SettingResponseSchema>;

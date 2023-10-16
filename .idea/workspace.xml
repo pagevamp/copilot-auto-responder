@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ba794e4-5421-428f-ba35-45915384899f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/migrations/20231015160846_create_setting_table/migration.sql" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/20231015160846_create_setting_table/migration.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/copilotApiUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/copilotApiUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/settings/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/settings/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/setting.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/setting.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +98,7 @@
       <workItem from="1697297360534" duration="83000" />
       <workItem from="1697297453074" duration="473000" />
       <workItem from="1697344878450" duration="11601000" />
+      <workItem from="1697426893437" duration="886000" />
     </task>
     <task id="LOCAL-00001" summary="Install Zod">
       <option name="closed" value="true" />

@@ -1,25 +1,15 @@
-import { PrismaClient, SettingType } from '@prisma/client';
+import { SettingType } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { SettingRequestSchema, SettingResponseSchema } from '@/types/setting';
+import { SettingRequestSchema } from '@/types/setting';
 import { errorHandler, getCurrentUser } from '@/utils/common';
+import { SettingService } from '@/app/api/settings/services/setting.service';
 
 export async function GET(request: NextRequest) {
-  const prisma = new PrismaClient();
-  try {
-    const currentUser = await getCurrentUser();
+  const settingService = new SettingService();
+  const currentUser = await getCurrentUser();
+  const setting = await settingService.findBySenderId(currentUser.id);
 
-    const setting = await prisma.setting.findFirst({
-      where: {
-        senderId: currentUser.id,
-      },
-    });
-
-    return NextResponse.json(setting ? { data: SettingResponseSchema.parse(setting) } : { data: null });
-  } catch (e: unknown) {
-    const error = e instanceof Error ? e : new Error(JSON.stringify(e));
-
-    return errorHandler(error.message, 500);
-  }
+  return NextResponse.json(setting ? { data: setting } : { data: null });
 }
 
 export async function PUT(request: NextRequest) {
@@ -40,26 +30,8 @@ export async function PUT(request: NextRequest) {
     }
   }
 
-  const requestData = setting.data;
-  const prisma = new PrismaClient();
-  const currentUser = await getCurrentUser();
-
-  await prisma.setting.upsert({
-    where: {
-      senderId: currentUser.id,
-    },
-    update: {
-      type: requestData.type,
-      workingHours: requestData.workingHours,
-      message: requestData.message
-    },
-    create: {
-      type: requestData.type,
-      workingHours: requestData.workingHours,
-      message: requestData.message,
-      senderId: currentUser.id
-    }
-  });
+  const settingService = new SettingService();
+  await settingService.save(setting.data);
 
   return NextResponse.json({});
 }
