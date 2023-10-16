@@ -39,7 +39,7 @@ const WorkingHours = ({ selectedDays }: Props) => {
             </div>
             <div className="w-1/4 min-w-[100px] max-w-[200px]">
               <Controller
-                name={`selectedDays[${selectedDayIndex}].startHour`}
+                name={`selectedDays[${selectedDayIndex}].endHour`}
                 render={({ field: { onChange, value } }) => (
                   <SelectField<HOUR>
                     value={value}
