@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(setting.error.issues);
   }
 
-  if (setting.data.type === SettingType.WITHIN_WORKING_HOURS) {
+  if (setting.data.type === SettingType.OUTSIDE_WORKING_HOURS) {
     if (!setting.data.workingHours) {
       return errorHandler('Working hours must be provided', 422);
     }

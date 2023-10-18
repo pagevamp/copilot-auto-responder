@@ -11,7 +11,7 @@ datasource db {
 enum SettingType {
   ENABLED
   DISABLED
-  WITHIN_WORKING_HOURS
+  OUTSIDE_WORKING_HOURS
 }
 
 model Setting {
