@@ -23,6 +23,8 @@ import {
   TIMEZONE_OPTIONS,
 } from "@/constants";
 import { useEffect } from "react";
+import Typography from "./Typography";
+import Fieldset from "./Fieldset";
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -54,9 +56,11 @@ const defaultSelectedDays: SelectedDay[] = [
 
 const defaultSettingsData: SettingsData = {
   autoRespond: AUTO_RESPONSE.OUTSIDE_WORKING_HOURS,
-  timezone: TIMEZONE.CST,
-  selectedDays: defaultSelectedDays,
-  response: "",
+  timezone: null,
+  selectedDays: [],
+  response:
+    "Thanks for getting in touch. We’re currently out of the office and won’t be able to immediately respond. We’ll get back to you as as soon as we can. ",
+  sender: "",
 };
 
 const AutoResponder = () => {
@@ -121,90 +125,95 @@ const AutoResponder = () => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <fieldset>
-          <h3 className="text-2xl">Auto responder</h3>
-          <p className="text-gray-500">{getAutoResponseMessage()}</p>
-          <br />
-          <section className="p-4 border border-gray-300 rounded-md">
-            <div className="mb-2">Enable auto response</div>
-            <Controller
-              name="autoRespond"
-              render={({ field: { onChange, value } }) => (
-                <SelectField<AUTO_RESPONSE>
-                  value={value}
-                  options={AUTO_RESPONSE_OPTIONS}
-                  onValueChange={(value: string) => {
-                    onChange(value);
-                  }}
-                />
-              )}
-            />
-          </section>
-        </fieldset>
-        <br />
-        <br />
-        {autoRespond === AUTO_RESPONSE.OUTSIDE_WORKING_HOURS && (
-          <fieldset>
-            <h3 className="text-2xl">Set your working hours</h3>
-            <p className="text-gray-500">
-              Your automated response will send outside of these hours.
-            </p>
-            <br />
-            <section className="px-4 border border-gray-300 rounded-md">
-              <div className="py-4">
-                <div className="mb-2">Timezone</div>
-                <Controller
-                  name="timezone"
-                  render={({ field: { onChange, value } }) => (
-                    <SelectField<TIMEZONE>
-                      value={value}
-                      options={Object.values(TIMEZONE_OPTIONS)}
-                      onValueChange={(value: string) => {
-                        onChange(value);
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className="flex items-center justify-between py-8 mt-4 mb-8 border-y border-gray-300">
-                <div className="mb-2">Select days</div>
-                <Days
-                  selectedDays={selectedDays.fields}
-                  onDayClick={toggleSelectedDay}
-                />
-              </div>
-              <WorkingHours selectedDays={selectedDays.fields} />
-            </section>
-          </fieldset>
-        )}
-        <br />
-        <br />
-        {autoRespond !== AUTO_RESPONSE.OFF && (
-          <fieldset>
-            <h3 className="text-2xl">Set your automated response</h3>
-            <p className="text-gray-500">
-              The app will send your automated response outside of these hours
-            </p>
-            <br />
-            <section className="p-4 border border-gray-300 rounded-md">
-              <div className="mb-2">Response</div>
-              <textarea
-                id="response"
-                placeholder="Your automated response"
-                className="block w-full p-2 rounded-md bg-transparent border border-gray-300 mb-8"
-                {...register("response")}
+      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
+        <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
+          <div className="w-full max-w-[880px] mx-auto">
+            <Fieldset
+              title="Auto responder configuration"
+              info={getAutoResponseMessage()}
+            >
+              <Typography text="Enable auto response" className="mb-2" />
+              <Controller
+                name="autoRespond"
+                render={({ field: { onChange, value } }) => (
+                  <SelectField<AUTO_RESPONSE>
+                    value={value}
+                    options={AUTO_RESPONSE_OPTIONS}
+                    onValueChange={(value: string) => {
+                      onChange(value);
+                    }}
+                  />
+                )}
               />
-              <p>Sent by </p>
-            </section>
-          </fieldset>
-        )}
-        <button
-          type="submit"
-          className="p-4 bg-slate-800 rounded-md mt-8 min-w-[120px] text-white hover:bg-slate-900"
-        >
-          Save
-        </button>
+            </Fieldset>
+            {autoRespond === AUTO_RESPONSE.OUTSIDE_WORKING_HOURS && (
+              <Fieldset
+                title="Working hours"
+                info="Your automated response will send outside of these hours"
+              >
+                <div>
+                  <Typography text="Timezone" className="mb-2" />
+                  <Controller
+                    name="timezone"
+                    render={({ field: { onChange, value } }) => (
+                      <SelectField<TIMEZONE>
+                        value={value}
+                        options={Object.values(TIMEZONE_OPTIONS)}
+                        onValueChange={(value: string) => {
+                          onChange(value);
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
+                  <Typography text="Select days" />
+                  <Days
+                    selectedDays={selectedDays.fields}
+                    onDayClick={toggleSelectedDay}
+                  />
+                </div>
+                <WorkingHours selectedDays={selectedDays.fields} />
+              </Fieldset>
+            )}
+            {autoRespond !== AUTO_RESPONSE.OFF && (
+              <Fieldset
+                title="Response message"
+                info="Customize the automated response message"
+              >
+                <Typography text="Response" className="mb-2" />
+                <textarea
+                  id="response"
+                  placeholder="Your automated response"
+                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8"
+                  {...register("response")}
+                />
+                <Typography text="Sent by" className="mb-2 mt-6" />
+                <input
+                  id="sender"
+                  placeholder="Your name"
+                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8"
+                  disabled
+                  {...register("sender")}
+                />
+              </Fieldset>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
+          <button
+            type="reset"
+            className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900  text-sm"
+          >
+            Save changes
+          </button>
+        </div>
       </form>
     </FormProvider>
   );

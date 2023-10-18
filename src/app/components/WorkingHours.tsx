@@ -2,6 +2,7 @@ import { Controller } from "react-hook-form";
 
 import SelectField from "./Select";
 import { DAY, HOUR, HOURS_SELECT_OPTIONS, SelectedDay } from "@/constants";
+import Typography from "./Typography";
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -9,7 +10,7 @@ interface Props {
 
 const WorkingHours = ({ selectedDays }: Props) => {
   return (
-    <ul>
+    <ul className="flex flex-col gap-6">
       {Object.values(DAY).map((day) => {
         const selectedDayIndex = selectedDays.findIndex(
           (selectedDay) => selectedDay.day === day
@@ -20,8 +21,8 @@ const WorkingHours = ({ selectedDays }: Props) => {
         }
 
         return (
-          <li key={day} className="flex items-center mb-4">
-            <span className="capitalize flex-1">{day}</span>
+          <li key={day} className="flex items-center">
+            <Typography text={day} className="capitalize flex-1" />
             <div className="w-1/4 min-w-[100px] max-w-[200px]">
               <Controller
                 name={`selectedDays[${selectedDayIndex}].startHour`}

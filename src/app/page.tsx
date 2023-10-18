@@ -39,7 +39,7 @@ export default async function Page({
     console.log(value);
   };
   return (
-    <main className="p-8">
+    <main className="h-full">
       <AutoResponder />
     </main>
   );

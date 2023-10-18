@@ -21,6 +21,8 @@ const SelectField = <V,>({
   className = "",
 }: Props<V>) => {
   const selectedOption = options.find((option) => option.value === value);
+  console.log(selectedOption);
+
   return (
     <Select.Root value={value} onValueChange={onValueChange}>
       <Select.Trigger
@@ -44,7 +46,13 @@ const SelectField = <V,>({
           </Select.ScrollUpButton>
           <Select.Viewport className="p-[5px]">
             {options.map(({ value, label }) => (
-              <SelectItem value={value} key={value}>
+              <SelectItem
+                value={value}
+                key={value}
+                {...(selectedOption?.value === value
+                  ? { "data-highlighted": true }
+                  : {})}
+              >
                 {label}
               </SelectItem>
             ))}
@@ -63,7 +71,7 @@ const SelectItem = React.forwardRef<any, Select.SelectItemProps>(
     return (
       <Select.Item
         className={
-          "text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1"
+          "text-[13px] hover:bg-gray-100 leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1 cursor-pointer"
         }
         {...props}
         ref={forwardedRef}
