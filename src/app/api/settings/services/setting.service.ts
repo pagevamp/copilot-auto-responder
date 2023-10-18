@@ -8,7 +8,7 @@ export class SettingService {
   async findByUserId(createdById: string): Promise<SettingResponse | null> {
     const setting = await this.prismaClient.setting.findFirst({
       where: {
-        createdById,
+        createdById: createdById,
       },
     });
 
