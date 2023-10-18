@@ -11,14 +11,15 @@ datasource db {
 enum SettingType {
   ENABLED
   DISABLED
-  WITHIN_WORKING_HOURS
+  OUTSIDE_WORKING_HOURS
 }
 
 model Setting {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type SettingType
+  timezone String?
   workingHours Json?	@db.JsonB
-  senderId  String @db.Uuid @unique
+  createdById  String @db.Uuid @unique
   message String?
   createdAt DateTime @db.Timestamptz() @default(now()) @ignore
   updatedAt DateTime @updatedAt @ignore

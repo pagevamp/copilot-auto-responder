@@ -5,10 +5,10 @@ import { getCurrentUser } from '@/utils/common';
 export class SettingService {
   private prismaClient: PrismaClient = new PrismaClient();
 
-  async findBySenderId(senderId: string): Promise<SettingResponse | null> {
+  async findByUserId(createdById: string): Promise<SettingResponse | null> {
     const setting = await this.prismaClient.setting.findFirst({
       where: {
-        senderId,
+        createdById,
       },
     });
 
@@ -24,7 +24,7 @@ export class SettingService {
 
     await this.prismaClient.setting.upsert({
       where: {
-        senderId: currentUser.id,
+        createdById: currentUser.id,
       },
       update: {
         type: requestData.type,
@@ -35,7 +35,7 @@ export class SettingService {
         type: requestData.type,
         workingHours: requestData.workingHours,
         message: requestData.message,
-        senderId: currentUser.id
+        createdById: currentUser.id
       }
     });
   }

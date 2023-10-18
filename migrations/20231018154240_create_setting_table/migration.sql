@@ -1,12 +1,13 @@
 -- CreateEnum
-CREATE TYPE "SettingType" AS ENUM ('enabled', 'disabled', 'within_working_hours');
+CREATE TYPE "SettingType" AS ENUM ('ENABLED', 'DISABLED', 'OUTSIDE_WORKING_HOURS');
 
 -- CreateTable
 CREATE TABLE "Setting" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "type" "SettingType" NOT NULL,
+    "timezone" TEXT,
     "workingHours" JSONB,
-    "senderId" UUID NOT NULL,
+    "createdById" UUID NOT NULL,
     "message" TEXT,
     "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -15,4 +16,4 @@ CREATE TABLE "Setting" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Setting_senderId_key" ON "Setting"("senderId");
+CREATE UNIQUE INDEX "Setting_createdById_key" ON "Setting"("createdById");
