@@ -28,11 +28,13 @@ export class SettingService {
       },
       update: {
         type: requestData.type,
+        timezone: requestData.timezone,
         workingHours: requestData.workingHours,
         message: requestData.message
       },
       create: {
         type: requestData.type,
+        timezone: requestData.timezone,
         workingHours: requestData.workingHours,
         message: requestData.message,
         createdById: currentUser.id

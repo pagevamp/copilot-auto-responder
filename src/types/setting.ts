@@ -18,7 +18,8 @@ export type SettingRequest = z.infer<typeof SettingRequestSchema>;
 export const SettingResponseSchema = z.object({
   id: z.string(),
   type: z.nativeEnum(SettingType),
-  workingHours: WorkingHoursSchema.optional(),
+  timezone: z.string().nullable(),
+  workingHours: WorkingHoursSchema.nullable(),
   createdById: z.string().uuid(),
   message: z.string().optional()
 });
