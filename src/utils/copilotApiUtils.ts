@@ -21,10 +21,6 @@ export type Client = {
     customFields: Record<string, ClientCustomField>
 }
 
-export type ClientError = {
-    code: string;
-}
-
 export type Company = {
     id: string
     name: string
@@ -64,7 +60,7 @@ export class CopilotAPI {
     }
 
     async getClient(clientId: string) {
-        return this.sendApiData<Client | ClientError>(`clients/${clientId}`)
+        return this.sendApiData<Client>(`clients/${clientId}`)
     }
 
     async getCompany(companyId: string) {
