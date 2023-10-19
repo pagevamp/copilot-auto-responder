@@ -73,69 +73,99 @@ export interface SelectedDay {
 }
 
 export enum TIMEZONE {
-  PST = "UTC-8:00",
-  PDT = "UTC-7:00",
-  MST = "UTC-7:00",
-  MDT = "UTC-6:00",
-  CST = "UTC-6:00",
-  CDT = "UTC-5:00",
-  EST = "UTC-5:00",
-  EDT = "UTC-4:00",
-  AKST = "UTC-9:00",
-  AKDT = "UTC-8:00",
-  HAST = "UTC-10:00",
-  HADT = "UTC-9:00",
-  AST = "UTC-4:00",
-  ADT = "UTC-3:00",
-  NST = "UTC-3:30",
-  NDT = "UTC-2:30",
-  GMT = "UTC+0:00",
-  BST = "UTC+1:00",
-  CET = "UTC+1:00",
-  CEST = "UTC+2:00",
-  EET = "UTC+2:00",
-  EEST = "UTC+3:00",
-  IST = "UTC+5:30",
-  AEST = "UTC+10:00",
-  AEDT = "UTC+11:00",
-  NZST = "UTC+12:00",
-  NZDT = "UTC+13:00",
-  JST = "UTC+9:00",
-  CHST = "UTC+8:00",
-  SGT = "UTC+8:00",
+  "PST-Pacific Standard Time (PST, UTC-8:00)" = "UTC-8:00",
+  "PDT-Pacific Daylight Time (PDT, UTC-7:00)" = "UTC-7:00",
+  "MST-Mountain Standard Time (MST, UTC-7:00)" = "UTC-7:00",
+  "MDT-Mountain Daylight Time (MDT, UTC-6:00)" = "UTC-6:00",
+  "CST-Central Standard Time (CST, UTC-6:00)" = "UTC-6:00",
+  "CDT-Central Daylight Time (CDT, UTC-5:00)" = "UTC-5:00",
+  "EST-Eastern Standard Time (EST, UTC-5:00)" = "UTC-5:00",
+  "EDT-Eastern Daylight Time (EDT, UTC-4:00)" = "UTC-4:00",
+  "AKST-Alaska Standard Time (AKST, UTC-9:00)" = "UTC-9:00",
+  "AKDT-Alaska Daylight Time (AKDT, UTC-8:00)" = "UTC-8:00",
+  "HAST-Hawaii-Aleutian Standard Time (HAST, UTC-10:00)" = "UTC-10:00",
+  "HADT-Hawaii-Aleutian Daylight Time (HADT, UTC-9:00)" = "UTC-9:00",
+  "AST-Atlantic Standard Time (AST, UTC-4:00)" = "UTC-4:00",
+  "ADT-Atlantic Daylight Time (ADT, UTC-3:00)" = "UTC-3:00",
+  "NST-Newfoundland Standard Time (NST, UTC-3:30)" = "UTC-3:30",
+  "NDT-Newfoundland Daylight Time (NDT, UTC-2:30)" = "UTC-2:30",
+  "GMT-Greenwich Mean Time (GMT, UTC+0:00)" = "UTC+0:00",
+  "BST-British Summer Time (BST, UTC+1:00)" = "UTC+1:00",
+  "CET-Central European Time (CET, UTC+1:00)" = "UTC+1:00",
+  "CEST-Central European Summer Time (CEST, UTC+2:00)" = "UTC+2:00",
+  "EET-Eastern European Time (EET, UTC+2:00)" = "UTC+2:00",
+  "EEST-Eastern European Summer Time (EEST, UTC+3:00)" = "UTC+3:00",
+  "IST-Indian Standard Time (IST, UTC+5:30)" = "UTC+5:30",
+  "AEST-Australian Eastern Standard Time (AEST, UTC+10:00)" = "UTC+10:00",
+  "AEDT-Australian Eastern Daylight Time (AEDT, UTC+11:00)" = "UTC+11:00",
+  "NZST-New Zealand Standard Time (NZST, UTC+12:00)" = "UTC+12:00",
+  "NZDT-New Zealand Daylight Time (NZDT, UTC+13:00)" = "UTC+13:00",
+  "JST-Japan Standard Time (JST, UTC+9:00)" = "UTC+9:00",
+  "CST-China Standard Time (CST, UTC+8:00)" = "UTC+8:00",
+  "SGT-Singapore Standard Time (SGT, UTC+8:00)" = "UTC+8:00",
 }
 
 export const TIMEZONE_LABELS = {
-  [TIMEZONE.PST]: "PST-Pacific Standard Time (PST, UTC-8:00)",
-  [TIMEZONE.PDT]: "PDT-Pacific Daylight Time (PDT, UTC-7:00)",
-  [TIMEZONE.MST]: "MST-Mountain Standard Time (MST, UTC-7:00)",
-  [TIMEZONE.MDT]: "MDT-Mountain Daylight Time (MDT, UTC-6:00)",
-  [TIMEZONE.CST]: "CST-Central Standard Time (CST, UTC-6:00)",
-  [TIMEZONE.CDT]: "CDT-Central Daylight Time (CDT, UTC-5:00)",
-  [TIMEZONE.EST]: "EST-Eastern Standard Time (EST, UTC-5:00)",
-  [TIMEZONE.EDT]: "EDT-Eastern Daylight Time (EDT, UTC-4:00)",
-  [TIMEZONE.AKST]: "AKST-Alaska Standard Time (AKST, UTC-9:00)",
-  [TIMEZONE.AKDT]: "AKDT-Alaska Daylight Time (AKDT, UTC-8:00)",
-  [TIMEZONE.HAST]: "HAST-Hawaii-Aleutian Standard Time (HAST, UTC-10:00)",
-  [TIMEZONE.HADT]: "HADT-Hawaii-Aleutian Daylight Time (HADT, UTC-9:00)",
-  [TIMEZONE.AST]: "AST-Atlantic Standard Time (AST, UTC-4:00)",
-  [TIMEZONE.ADT]: "ADT-Atlantic Daylight Time (ADT, UTC-3:00)",
-  [TIMEZONE.NST]: "NST-Newfoundland Standard Time (NST, UTC-3:30)",
-  [TIMEZONE.NDT]: "NDT-Newfoundland Daylight Time (NDT, UTC-2:30)",
-  [TIMEZONE.GMT]: "GMT-Greenwich Mean Time (GMT, UTC+0:00)",
-  [TIMEZONE.BST]: "BST-British Summer Time (BST, UTC+1:00)",
-  [TIMEZONE.CET]: "CET-Central European Time (CET, UTC+1:00)",
-  [TIMEZONE.CEST]: "CEST-Central European Summer Time (CEST, UTC+2:00)",
-  [TIMEZONE.EET]: "EET-Eastern European Time (EET, UTC+2:00)",
-  [TIMEZONE.EEST]: "EEST-Eastern European Summer Time (EEST, UTC+3:00)",
-  [TIMEZONE.IST]: "IST-Indian Standard Time (IST, UTC+5:30)",
-  [TIMEZONE.AEST]: "AEST-Australian Eastern Standard Time (AEST, UTC+10:00)",
-  [TIMEZONE.AEDT]: "AEDT-Australian Eastern Daylight Time (AEDT, UTC+11:00)",
-  [TIMEZONE.NZST]: "NZST-New Zealand Standard Time (NZST, UTC+12:00)",
-  [TIMEZONE.NZDT]: "NZDT-New Zealand Daylight Time (NZDT, UTC+13:00)",
-  [TIMEZONE.JST]: "JST-Japan Standard Time (JST, UTC+9:00)",
-  [TIMEZONE.CHST]: "CST-China Standard Time (CST, UTC+8:00)",
-  [TIMEZONE.SGT]: "SGT-Singapore Standard Time (SGT, UTC+8:00)",
+  [TIMEZONE["PST-Pacific Standard Time (PST, UTC-8:00)"]]:
+    "PST-Pacific Standard Time (PST, UTC-8:00)",
+  [TIMEZONE["PDT-Pacific Daylight Time (PDT, UTC-7:00)"]]:
+    "PDT-Pacific Daylight Time (PDT, UTC-7:00)",
+  [TIMEZONE["MST-Mountain Standard Time (MST, UTC-7:00)"]]:
+    "MST-Mountain Standard Time (MST, UTC-7:00)",
+  [TIMEZONE["MDT-Mountain Daylight Time (MDT, UTC-6:00)"]]:
+    "MDT-Mountain Daylight Time (MDT, UTC-6:00)",
+  [TIMEZONE["CST-Central Standard Time (CST, UTC-6:00)"]]:
+    "CST-Central Standard Time (CST, UTC-6:00)",
+  [TIMEZONE["CDT-Central Daylight Time (CDT, UTC-5:00)"]]:
+    "CDT-Central Daylight Time (CDT, UTC-5:00)",
+  [TIMEZONE["EST-Eastern Standard Time (EST, UTC-5:00)"]]:
+    "EST-Eastern Standard Time (EST, UTC-5:00)",
+  [TIMEZONE["EDT-Eastern Daylight Time (EDT, UTC-4:00)"]]:
+    "EDT-Eastern Daylight Time (EDT, UTC-4:00)",
+  [TIMEZONE["AKST-Alaska Standard Time (AKST, UTC-9:00)"]]:
+    "AKST-Alaska Standard Time (AKST, UTC-9:00)",
+  [TIMEZONE["AKDT-Alaska Daylight Time (AKDT, UTC-8:00)"]]:
+    "AKDT-Alaska Daylight Time (AKDT, UTC-8:00)",
+  [TIMEZONE["HAST-Hawaii-Aleutian Standard Time (HAST, UTC-10:00)"]]:
+    "HAST-Hawaii-Aleutian Standard Time (HAST, UTC-10:00)",
+  [TIMEZONE["HADT-Hawaii-Aleutian Daylight Time (HADT, UTC-9:00)"]]:
+    "HADT-Hawaii-Aleutian Daylight Time (HADT, UTC-9:00)",
+  [TIMEZONE["AST-Atlantic Standard Time (AST, UTC-4:00)"]]:
+    "AST-Atlantic Standard Time (AST, UTC-4:00)",
+  [TIMEZONE["ADT-Atlantic Daylight Time (ADT, UTC-3:00)"]]:
+    "ADT-Atlantic Daylight Time (ADT, UTC-3:00)",
+  [TIMEZONE["NST-Newfoundland Standard Time (NST, UTC-3:30)"]]:
+    "NST-Newfoundland Standard Time (NST, UTC-3:30)",
+  [TIMEZONE["NDT-Newfoundland Daylight Time (NDT, UTC-2:30)"]]:
+    "NDT-Newfoundland Daylight Time (NDT, UTC-2:30)",
+  [TIMEZONE["GMT-Greenwich Mean Time (GMT, UTC+0:00)"]]:
+    "GMT-Greenwich Mean Time (GMT, UTC+0:00)",
+  [TIMEZONE["BST-British Summer Time (BST, UTC+1:00)"]]:
+    "BST-British Summer Time (BST, UTC+1:00)",
+  [TIMEZONE["CET-Central European Time (CET, UTC+1:00)"]]:
+    "CET-Central European Time (CET, UTC+1:00)",
+  [TIMEZONE["CEST-Central European Summer Time (CEST, UTC+2:00)"]]:
+    "CEST-Central European Summer Time (CEST, UTC+2:00)",
+  [TIMEZONE["EET-Eastern European Time (EET, UTC+2:00)"]]:
+    "EET-Eastern European Time (EET, UTC+2:00)",
+  [TIMEZONE["EEST-Eastern European Summer Time (EEST, UTC+3:00)"]]:
+    "EEST-Eastern European Summer Time (EEST, UTC+3:00)",
+  [TIMEZONE["IST-Indian Standard Time (IST, UTC+5:30)"]]:
+    "IST-Indian Standard Time (IST, UTC+5:30)",
+  [TIMEZONE["AEST-Australian Eastern Standard Time (AEST, UTC+10:00)"]]:
+    "AEST-Australian Eastern Standard Time (AEST, UTC+10:00)",
+  [TIMEZONE["AEDT-Australian Eastern Daylight Time (AEDT, UTC+11:00)"]]:
+    "AEDT-Australian Eastern Daylight Time (AEDT, UTC+11:00)",
+  [TIMEZONE["NZST-New Zealand Standard Time (NZST, UTC+12:00)"]]:
+    "NZST-New Zealand Standard Time (NZST, UTC+12:00)",
+  [TIMEZONE["NZDT-New Zealand Daylight Time (NZDT, UTC+13:00)"]]:
+    "NZDT-New Zealand Daylight Time (NZDT, UTC+13:00)",
+  [TIMEZONE["JST-Japan Standard Time (JST, UTC+9:00)"]]:
+    "JST-Japan Standard Time (JST, UTC+9:00)",
+  [TIMEZONE["CST-China Standard Time (CST, UTC+8:00)"]]:
+    "CST-China Standard Time (CST, UTC+8:00)",
+  [TIMEZONE["SGT-Singapore Standard Time (SGT, UTC+8:00)"]]:
+    "SGT-Singapore Standard Time (SGT, UTC+8:00)",
 } as const;
 
 const TIMEZONE_LABEL = Object.values(TIMEZONE_LABELS);
