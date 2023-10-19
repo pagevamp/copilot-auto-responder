@@ -195,3 +195,5 @@ export interface SettingsData {
   response: string;
   sender: string;
 }
+
+// "Inter", "Helvetica", "Arial", san-serif
