@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { CopilotAPI, MeResponse } from '@/utils/copilotApiUtils';
 import { WorkingHours } from '@/types/setting';
-import { DayOfWeek, LocalDate, LocalTime, ZonedDateTime, ZoneId } from '@js-joda/core';
+import { DayOfWeek, LocalDate, LocalTime, ZonedDateTime, ZoneId, ZoneOffset } from '@js-joda/core';
 
 export function errorHandler(message: string, status: number = 200) {
   return NextResponse.json({ message }, {

@@ -14,7 +14,7 @@ export type Message = z.infer<typeof MessageSchema>;
 
 export const SendMessageRequestSchema = z.object({
   text: z.string(),
-  channel: z.string().uuid(),
+  channelId: z.string().uuid(),
   senderId: z.string().uuid()
 });
 export type SendMessageRequest = z.infer<typeof SendMessageRequestSchema>;

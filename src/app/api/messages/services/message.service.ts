@@ -18,7 +18,7 @@ export class MessageService {
     }
 
     if (setting?.type === SettingType.ENABLED) {
-      await this.sendMessage(setting);
+      await this.sendMessage(setting, message);
     }
 
     const copilotClient = new CopilotAPI(appConfig.copilotApiKey);
@@ -33,17 +33,17 @@ export class MessageService {
     }
 
     if (isWithinWorkingHours(setting.timezone, setting.workingHours)) {
-      await this.sendMessage(setting);
+      await this.sendMessage(setting, message);
     }
   }
 
-  async sendMessage(setting: SettingResponse): Promise<void> {
-    const message = SendMessageRequestSchema.parse({
+  async sendMessage(setting: SettingResponse, message: Message): Promise<void> {
+    const messageData = SendMessageRequestSchema.parse({
       text: setting.message,
       senderId: setting.createdById,
-      channelId: ''
+      channelId: message.channelId
     });
 
-    await this.copilotClient.sendMessage(message);
+    await this.copilotClient.sendMessage(messageData);
   }
 }
