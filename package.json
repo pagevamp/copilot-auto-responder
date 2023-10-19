@@ -10,6 +10,7 @@
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
+    "@js-joda/core": "^5.6.1",
     "@prisma/client": "^5.4.2",
     "@vercel/postgres": "^0.5.0",
     "next": "latest",

@@ -6,6 +6,7 @@ export const WorkingHoursSchema = z.array(z.object({
   startTime: z.string(),
   endTime: z.string(),
 }));
+export type WorkingHours = z.infer<typeof WorkingHoursSchema>;
 
 export const SettingRequestSchema = z.object({
   type: z.nativeEnum(SettingType),

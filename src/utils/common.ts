@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { CopilotAPI, MeResponse } from '@/utils/copilotApiUtils';
+import { WorkingHours } from '@/types/setting';
+import { DayOfWeek, LocalDate, LocalTime, ZonedDateTime, ZoneId } from '@js-joda/core';
 
 export function errorHandler(message: string, status: number = 200) {
   return NextResponse.json({ message }, {
@@ -14,4 +16,18 @@ export async function getCurrentUser(): Promise<MeResponse> {
 
   const copilotClient = new CopilotAPI(process.env.COPILOT_API_KEY);
   return await copilotClient.me();
+}
+
+export function isWithinWorkingHours(timezone: string, workingHours: WorkingHours) {
+  const currentDateTime = ZonedDateTime.now(ZoneId.of(timezone));
+  const currentDay = currentDateTime.dayOfWeek();
+  const workingDay = workingHours.find(workingHour => DayOfWeek.of(workingHour.weekday).equals(currentDay));
+
+  if (!workingDay) {
+    return false;
+  }
+
+  const currentTime = currentDateTime.toLocalTime();
+
+  return currentTime.isAfter(LocalTime.parse(workingDay.startTime)) && currentTime.isBefore(LocalTime.parse(workingDay.endTime));
 }
