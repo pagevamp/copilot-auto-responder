@@ -25,7 +25,6 @@ export class SettingService {
 
   async save(requestData: SettingRequest): Promise<void> {
     const currentUser = await getCurrentUser();
-    console.log(requestData);
 
     const settingByUser = await this.prismaClient.setting.findFirst({
       where: {

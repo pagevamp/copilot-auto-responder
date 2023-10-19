@@ -9,14 +9,14 @@ interface Props {
 const Days = ({ selectedDays, onDayClick }: Props) => {
   return (
     <ul className="flex justify-between items-center gap-2">
-      {Object.keys(DAYS).map((day: DAY_KEY) => {
+      {Object.keys(DAYS).map((day: DAY_KEY | string) => {
         const isSelected = !!selectedDays.find(
-          (selectedDay) => DAYS[day] === selectedDay.day
+          (selectedDay) => DAYS[day as DAY_KEY] === selectedDay.day
         );
         return (
           <li
             key={day}
-            onClick={() => onDayClick(DAYS[day])}
+            onClick={() => onDayClick(DAYS[day as DAY_KEY])}
             className={`w-8 h-8 flex items-center justify-center rounded-full 
         uppercase text-center leading-8 ${
           isSelected ? "bg-slate-800" : "bg-slate-300"

@@ -17,10 +17,9 @@ interface Props {
 const WorkingHours = ({ selectedDays }: Props) => {
   return (
     <ul className="flex flex-col gap-6">
-      {Object.keys(DAYS).map((day: DAY_KEY) => {
+      {Object.keys(DAYS).map((day: DAY_KEY | string) => {
         const selectedDayIndex = selectedDays.findIndex((selectedDay) => {
-          console.log({ day, selectedDay: selectedDay.day });
-          return selectedDay.day === DAYS[day];
+          return selectedDay.day === DAYS[day as DAY_KEY];
         });
 
         if (selectedDayIndex < 0) {

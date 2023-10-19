@@ -40,16 +40,6 @@ export default async function Page({
 }) {
   const { me } = await getContent(searchParams);
 
-  const onOptionChange = async (value: string) => {
-    "use server";
-    console.log(value);
-  };
-
-  const onResponseChange = async (value: string) => {
-    "use server";
-    console.log(value);
-  };
-
   const saveSettings = async (data: SettingsData) => {
     "use server";
 
@@ -63,7 +53,6 @@ export default async function Page({
         endTime: selectedDay.endHour,
       })),
     };
-    // console.log(setting);
     await settingsService.save(setting);
   };
   return (

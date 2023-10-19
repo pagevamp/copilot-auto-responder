@@ -23,7 +23,6 @@ const SelectField = <V,>({
   className = "",
 }: Props<V>) => {
   const selectedOption = options.find((option) => option.value === value);
-  console.log(ChevronDown);
   return (
     <Select.Root value={value} onValueChange={onValueChange}>
       <Select.Trigger
