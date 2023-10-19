@@ -122,7 +122,6 @@ export const TIMEZONE_LABELS = {
   [TIMEZONE.ADT]: "ADT-Atlantic Daylight Time (ADT, UTC-3:00)",
   [TIMEZONE.NST]: "NST-Newfoundland Standard Time (NST, UTC-3:30)",
   [TIMEZONE.NDT]: "NDT-Newfoundland Daylight Time (NDT, UTC-2:30)",
-  [TIMEZONE.PDT]: "PDT-Pacific Daylight Time (PDT, UTC-7:00)",
   [TIMEZONE.GMT]: "GMT-Greenwich Mean Time (GMT, UTC+0:00)",
   [TIMEZONE.BST]: "BST-British Summer Time (BST, UTC+1:00)",
   [TIMEZONE.CET]: "CET-Central European Time (CET, UTC+1:00)",
