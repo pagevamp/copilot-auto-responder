@@ -23,7 +23,7 @@ import {
   TIMEZONE,
   TIMEZONE_OPTIONS,
 } from "@/constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Typography from "./Typography";
 import Fieldset from "./Fieldset";
 import { $Enums } from "@prisma/client";
@@ -66,13 +66,14 @@ const defaultSettingsData: SettingsData = {
 };
 
 interface Props {
-  sender: string;
-  onSave(data: SettingsData): void;
+  onSave(data: SettingsData): Promise<void>;
+  currentSetting: SettingsData;
 }
 
-const AutoResponder = ({ sender, onSave }: Props) => {
+const AutoResponder = ({ onSave, currentSetting }: Props) => {
+  const [saving, setSaving] = useState(false);
   const methods = useForm<SettingsData>({
-    defaultValues: { ...defaultSettingsData, sender },
+    defaultValues: currentSetting,
   });
   const {
     control,
@@ -80,14 +81,18 @@ const AutoResponder = ({ sender, onSave }: Props) => {
     handleSubmit,
     watch,
     setValue,
+    reset,
+    getValues,
     formState: { isDirty },
+    getFieldState,
   } = methods;
 
   const selectedDays = useFieldArray({
     control: control,
     name: "selectedDays",
   });
-  const autoRespond = watch("autoRespond");
+  // const autoRespond = watch("autoRespond");
+  const { autoRespond } = getValues();
 
   useEffect(() => {
     if (autoRespond === $Enums.SettingType.DISABLED) {
@@ -137,13 +142,23 @@ const AutoResponder = ({ sender, onSave }: Props) => {
     return "";
   };
 
-  const onSubmit: SubmitHandler<SettingsData> = (data) => {
-    onSave(data);
+  const onSubmit: SubmitHandler<SettingsData> = async (data) => {
+    setSaving(true);
+    await onSave(data);
+    setSaving(false);
+  };
+
+  const onReset = () => {
+    reset(currentSetting);
   };
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="h-full flex flex-col"
+        onReset={onReset}
+      >
         <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
           <div className="w-full max-w-[880px] mx-auto">
             <Fieldset
@@ -201,17 +216,15 @@ const AutoResponder = ({ sender, onSave }: Props) => {
               >
                 <Typography text="Response" className="mb-2" />
                 <textarea
-                  id="response"
                   placeholder="Your automated response"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8"
+                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 resize-none"
                   {...register("response")}
                 />
                 <Typography text="Sent by" className="mb-2 mt-6" />
                 <input
-                  id="sender"
-                  placeholder="Your name"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8"
                   disabled
+                  placeholder="Your name"
+                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 disabled:text-gray-500"
                   {...register("sender")}
                 />
               </Fieldset>
@@ -231,7 +244,7 @@ const AutoResponder = ({ sender, onSave }: Props) => {
             disabled={!isDirty}
             className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Save changes
+            {saving ? "Saving..." : "Save changes"}
           </button>
         </div>
       </form>

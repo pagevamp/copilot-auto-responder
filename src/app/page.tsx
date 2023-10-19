@@ -5,8 +5,11 @@ import {
   CopilotAPI,
   MeResponse,
 } from "@/utils/copilotApiUtils";
-import { SettingsData } from "@/constants";
+import { HOUR, SettingsData, TIMEZONE } from "@/constants";
 import { SettingService } from "./api/settings/services/setting.service";
+import { getCurrentUser } from "@/utils/common";
+import { SettingResponse } from "@/types/setting";
+import { $Enums } from "@prisma/client";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -20,7 +23,7 @@ async function getContent(searchParams: SearchParams) {
   const copilotAPI = new CopilotAPI(process.env.COPILOT_API_KEY);
   const result: { client?: Client; company?: Company; me?: MeResponse } = {};
 
-  result.me = await copilotAPI.me();
+  result.me = await getCurrentUser();
 
   if (searchParams.clientId && typeof searchParams.clientId === "string") {
     result.client = await copilotAPI.getClient(searchParams.clientId);
@@ -33,12 +36,29 @@ async function getContent(searchParams: SearchParams) {
   return result;
 }
 
+const populateSettingsFormData = (
+  settings: SettingResponse
+): Omit<SettingsData, "sender"> => {
+  return {
+    autoRespond: settings.type || $Enums.SettingType.DISABLED,
+    response: settings.message || "",
+    timezone: settings.timezone || "",
+    selectedDays: (settings.workingHours || [])?.map((workingHour) => ({
+      day: workingHour.weekday,
+      startHour: workingHour.startTime as HOUR,
+      endHour: workingHour.endTime as HOUR,
+    })),
+  };
+};
+
 export default async function Page({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
   const { me } = await getContent(searchParams);
+
+  const setting = await settingsService.findByUserId(me?.id as string);
 
   const saveSettings = async (data: SettingsData) => {
     "use server";
@@ -55,11 +75,15 @@ export default async function Page({
     };
     await settingsService.save(setting);
   };
+
   return (
     <main className="h-full">
       <AutoResponder
-        sender={`${me?.givenName} ${me?.familyName}`}
         onSave={saveSettings}
+        currentSetting={{
+          ...populateSettingsFormData(setting as SettingResponse),
+          sender: `${me?.givenName} ${me?.familyName}`,
+        }}
       />
     </main>
   );
