@@ -1,4 +1,5 @@
 import { SelectOption } from "@/app/components/Select";
+import { $Enums } from "@prisma/client";
 
 export enum AUTO_RESPONSE {
   ALWAYS_ON = "alwaysOn",
@@ -6,24 +7,24 @@ export enum AUTO_RESPONSE {
   OFF = "off",
 }
 
-export const AUTO_RESPONSE_OPTIONS: SelectOption<AUTO_RESPONSE>[] = [
+export const AUTO_RESPONSE_OPTIONS: SelectOption<$Enums.SettingType>[] = [
   {
-    value: AUTO_RESPONSE.OUTSIDE_WORKING_HOURS,
+    value: $Enums.SettingType.OUTSIDE_WORKING_HOURS,
     label: "Outside working hours",
   },
-  { value: AUTO_RESPONSE.ALWAYS_ON, label: "Always on" },
-  { value: AUTO_RESPONSE.OFF, label: "Off" },
+  { value: $Enums.SettingType.ENABLED, label: "Always on" },
+  { value: $Enums.SettingType.DISABLED, label: "Off" },
 ];
 
-export enum DAY {
-  SUNDAY = "sunday",
-  MONDAY = "monday",
-  TUESDAY = "tuesday",
-  WEDNESDAY = "wednesday",
-  THURSDAY = "thursday",
-  FRIDAY = "friday",
-  SATURDAY = "saturday",
-}
+export const DAYS = {
+  SUNDAY: 1,
+  MONDAY: 2,
+  TUESDAY: 3,
+  WEDNESDAY: 4,
+  THURSDAY: 5,
+  FRIDAY: 6,
+  SATURDAY: 7,
+};
 
 export enum HOUR {
   "0AM" = "0:00 AM",
@@ -62,8 +63,11 @@ export const HOURS_SELECT_OPTIONS: SelectOption<HOUR>[] = Object.values(
   value: hour,
 }));
 
+export type DAY_VALUE = (typeof DAYS)[keyof typeof DAYS];
+export type DAY_KEY = keyof typeof DAYS;
+
 export interface SelectedDay {
-  day: DAY;
+  day: DAY_VALUE;
   startHour: HOUR;
   endHour: HOUR;
 }
@@ -156,8 +160,8 @@ export const TIMEZONE_OPTIONS = Object.entries(TIMEZONE_LABELS).reduce(
 ) as Record<TIMEZONE, TimezoneOption>;
 
 export interface SettingsData {
-  autoRespond: AUTO_RESPONSE;
-  timezone: TIMEZONE | null;
+  autoRespond: $Enums.SettingType;
+  timezone: TIMEZONE | "";
   selectedDays: SelectedDay[];
   response: string;
   sender: string;

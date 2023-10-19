@@ -13,7 +13,8 @@ import WorkingHours from "./WorkingHours";
 import {
   AUTO_RESPONSE,
   AUTO_RESPONSE_OPTIONS,
-  DAY,
+  DAYS,
+  DAY_VALUE,
   DEFAULT_END_HOUR,
   DEFAULT_START_HOUR,
   HOUR,
@@ -25,50 +26,63 @@ import {
 import { useEffect } from "react";
 import Typography from "./Typography";
 import Fieldset from "./Fieldset";
+import { $Enums } from "@prisma/client";
 
 const defaultSelectedDays: SelectedDay[] = [
   {
-    day: DAY.MONDAY,
+    day: DAYS.MONDAY,
     startHour: DEFAULT_START_HOUR,
     endHour: DEFAULT_END_HOUR,
   },
   {
-    day: DAY.TUESDAY,
+    day: DAYS.TUESDAY,
     startHour: DEFAULT_START_HOUR,
     endHour: DEFAULT_END_HOUR,
   },
   {
-    day: DAY.WEDNESDAY,
+    day: DAYS.WEDNESDAY,
     startHour: DEFAULT_START_HOUR,
     endHour: DEFAULT_END_HOUR,
   },
   {
-    day: DAY.THURSDAY,
+    day: DAYS.THURSDAY,
     startHour: DEFAULT_START_HOUR,
     endHour: DEFAULT_END_HOUR,
   },
   {
-    day: DAY.FRIDAY,
+    day: DAYS.FRIDAY,
     startHour: DEFAULT_START_HOUR,
     endHour: DEFAULT_END_HOUR,
   },
 ];
 
 const defaultSettingsData: SettingsData = {
-  autoRespond: AUTO_RESPONSE.OUTSIDE_WORKING_HOURS,
-  timezone: null,
+  autoRespond: $Enums.SettingType.DISABLED,
+  timezone: "",
   selectedDays: [],
   response:
     "Thanks for getting in touch. We’re currently out of the office and won’t be able to immediately respond. We’ll get back to you as as soon as we can. ",
   sender: "",
 };
 
-const AutoResponder = () => {
+interface Props {
+  sender: string;
+  onSave(data: SettingsData): void;
+}
+
+const AutoResponder = ({ sender, onSave }: Props) => {
   const methods = useForm<SettingsData>({
-    defaultValues: defaultSettingsData,
+    defaultValues: { ...defaultSettingsData, sender },
   });
-  const { control, register, handleSubmit, watch, setValue } = methods;
-  const onSubmit: SubmitHandler<SettingsData> = (data) => console.log(data);
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { isDirty },
+  } = methods;
+
   const selectedDays = useFieldArray({
     control: control,
     name: "selectedDays",
@@ -76,21 +90,21 @@ const AutoResponder = () => {
   const autoRespond = watch("autoRespond");
 
   useEffect(() => {
-    if (autoRespond === AUTO_RESPONSE.OFF) {
+    if (autoRespond === $Enums.SettingType.DISABLED) {
       setValue("selectedDays", []);
-      setValue("timezone", TIMEZONE.CST);
+      setValue("timezone", "");
       setValue("response", "");
     }
-    if (autoRespond === AUTO_RESPONSE.ALWAYS_ON) {
-      setValue("timezone", TIMEZONE.CST);
+    if (autoRespond === $Enums.SettingType.ENABLED) {
+      setValue("timezone", "");
       setValue("selectedDays", []);
     }
-    if (autoRespond === AUTO_RESPONSE.OUTSIDE_WORKING_HOURS) {
+    if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
       setValue("selectedDays", defaultSelectedDays);
     }
   }, [autoRespond, setValue]);
 
-  const toggleSelectedDay = (day: DAY) => {
+  const toggleSelectedDay = (day: DAY_VALUE) => {
     const selectedDayIndex = selectedDays.fields.findIndex(
       (selectedDay) => selectedDay.day === day
     );
@@ -108,19 +122,23 @@ const AutoResponder = () => {
   };
 
   const getAutoResponseMessage = () => {
-    if (autoRespond === AUTO_RESPONSE.OFF) {
-      return "Never reply any message automatically.";
+    if (autoRespond === $Enums.SettingType.DISABLED) {
+      return "Set up automatic responses to incoming messages in the Messages App";
     }
 
-    if (autoRespond === AUTO_RESPONSE.ALWAYS_ON) {
-      return "Always reply all message automatically.";
+    if (autoRespond === $Enums.SettingType.ENABLED) {
+      return "Set up automatic responses to incoming messages in the Messages App";
     }
 
-    if (autoRespond === AUTO_RESPONSE.OUTSIDE_WORKING_HOURS) {
+    if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
       return " When your clients message you outside of working hours, automatically reply to them.";
     }
 
     return "";
+  };
+
+  const onSubmit: SubmitHandler<SettingsData> = (data) => {
+    onSave(data);
   };
 
   return (
@@ -130,13 +148,13 @@ const AutoResponder = () => {
           <div className="w-full max-w-[880px] mx-auto">
             <Fieldset
               title="Auto responder configuration"
-              info={getAutoResponseMessage()}
+              info="Set up automatic responses to incoming messages in the Messages App"
             >
               <Typography text="Enable auto response" className="mb-2" />
               <Controller
                 name="autoRespond"
                 render={({ field: { onChange, value } }) => (
-                  <SelectField<AUTO_RESPONSE>
+                  <SelectField<$Enums.SettingType>
                     value={value}
                     options={AUTO_RESPONSE_OPTIONS}
                     onValueChange={(value: string) => {
@@ -146,7 +164,7 @@ const AutoResponder = () => {
                 )}
               />
             </Fieldset>
-            {autoRespond === AUTO_RESPONSE.OUTSIDE_WORKING_HOURS && (
+            {autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS && (
               <Fieldset
                 title="Working hours"
                 info="Your automated response will send outside of these hours"
@@ -176,7 +194,7 @@ const AutoResponder = () => {
                 <WorkingHours selectedDays={selectedDays.fields} />
               </Fieldset>
             )}
-            {autoRespond !== AUTO_RESPONSE.OFF && (
+            {autoRespond !== $Enums.SettingType.DISABLED && (
               <Fieldset
                 title="Response message"
                 info="Customize the automated response message"
@@ -203,13 +221,15 @@ const AutoResponder = () => {
         <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
           <button
             type="reset"
-            className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm"
+            disabled={!isDirty}
+            className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900  text-sm"
+            disabled={!isDirty}
+            className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
           >
             Save changes
           </button>

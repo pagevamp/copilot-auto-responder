@@ -1,7 +1,16 @@
 import AutoResponder from "./components/AutoResponder";
-import { Client, Company, CopilotAPI } from "@/utils/copilotApiUtils";
+import {
+  Client,
+  Company,
+  CopilotAPI,
+  MeResponse,
+} from "@/utils/copilotApiUtils";
+import { SettingsData } from "@/constants";
+import { SettingService } from "./api/settings/services/setting.service";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
+
+const settingsService = new SettingService();
 
 async function getContent(searchParams: SearchParams) {
   if (!process.env.COPILOT_API_KEY) {
@@ -9,7 +18,9 @@ async function getContent(searchParams: SearchParams) {
   }
 
   const copilotAPI = new CopilotAPI(process.env.COPILOT_API_KEY);
-  const result: { client?: Client; company?: Company } = {};
+  const result: { client?: Client; company?: Company; me?: MeResponse } = {};
+
+  result.me = await copilotAPI.me();
 
   if (searchParams.clientId && typeof searchParams.clientId === "string") {
     result.client = await copilotAPI.getClient(searchParams.clientId);
@@ -27,7 +38,7 @@ export default async function Page({
 }: {
   searchParams: SearchParams;
 }) {
-  const data = await getContent(searchParams);
+  const { me } = await getContent(searchParams);
 
   const onOptionChange = async (value: string) => {
     "use server";
@@ -38,9 +49,29 @@ export default async function Page({
     "use server";
     console.log(value);
   };
+
+  const saveSettings = async (data: SettingsData) => {
+    "use server";
+
+    const setting = {
+      type: data.autoRespond,
+      message: data.response,
+      timezone: data.timezone,
+      workingHours: data.selectedDays.map((selectedDay) => ({
+        weekday: selectedDay.day,
+        startTime: selectedDay.startHour,
+        endTime: selectedDay.endHour,
+      })),
+    };
+    // console.log(setting);
+    await settingsService.save(setting);
+  };
   return (
     <main className="h-full">
-      <AutoResponder />
+      <AutoResponder
+        sender={`${me?.givenName} ${me?.familyName}`}
+        onSave={saveSettings}
+      />
     </main>
   );
 }

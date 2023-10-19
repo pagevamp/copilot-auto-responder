@@ -1,7 +1,9 @@
 "use client";
 
-import * as Select from "@radix-ui/react-select";
 import React from "react";
+import * as Select from "@radix-ui/react-select";
+
+import { ChevronDown } from "@/icons";
 
 export interface SelectOption<V = void> {
   value: V extends string ? V : string;
@@ -21,8 +23,7 @@ const SelectField = <V,>({
   className = "",
 }: Props<V>) => {
   const selectedOption = options.find((option) => option.value === value);
-  console.log(selectedOption);
-
+  console.log(ChevronDown);
   return (
     <Select.Root value={value} onValueChange={onValueChange}>
       <Select.Trigger
@@ -36,7 +37,7 @@ const SelectField = <V,>({
           {selectedOption?.label || "Select option..."}
         </Select.Value>
         <Select.Icon className="text-violet11">
-          {/* <ChevronDownIcon /> */}
+          <ChevronDown />
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
