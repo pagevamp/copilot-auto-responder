@@ -94,17 +94,19 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const autoRespond = watch("autoRespond");
 
   useEffect(() => {
-    if (autoRespond === $Enums.SettingType.DISABLED) {
-      setValue("selectedDays", []);
-      setValue("timezone", getValues().timezone  || Intl.DateTimeFormat().resolvedOptions().timeZone);
-      setValue("response", "");
-    }
-    if (autoRespond === $Enums.SettingType.ENABLED) {
-      setValue("timezone", getValues().timezone  || Intl.DateTimeFormat().resolvedOptions().timeZone);
-      setValue("selectedDays", []);
-    }
-    if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
-      setValue("selectedDays", defaultSelectedDays);
+    if(isDirty) {
+      if (autoRespond === $Enums.SettingType.DISABLED) {
+        setValue("selectedDays", []);
+        setValue("timezone", '');
+        setValue("response", "");
+      }
+      if (autoRespond === $Enums.SettingType.ENABLED) {
+        setValue("timezone", getValues().timezone || Intl.DateTimeFormat().resolvedOptions().timeZone);
+        setValue("selectedDays", []);
+      }
+      if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
+        setValue("selectedDays", defaultSelectedDays);
+      }
     }
   }, [autoRespond, setValue]);
 
