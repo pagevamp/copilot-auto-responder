@@ -73,8 +73,6 @@ interface Props {
 
 const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const [saving, setSaving] = useState(false);
-  console.log(currentSetting, "=====");
-
   const methods = useForm<SettingsData>({
     defaultValues: currentSetting,
   });
@@ -86,6 +84,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     setValue,
     reset,
     formState: { isDirty },
+    getValues
   } = methods;
 
   const selectedDays = useFieldArray({
@@ -97,11 +96,11 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
   useEffect(() => {
     if (autoRespond === $Enums.SettingType.DISABLED) {
       setValue("selectedDays", []);
-      setValue("timezone", "");
+      setValue("timezone", getValues().timezone  || Intl.DateTimeFormat().resolvedOptions().timeZone);
       setValue("response", "");
     }
     if (autoRespond === $Enums.SettingType.ENABLED) {
-      setValue("timezone", "");
+      setValue("timezone", getValues().timezone  || Intl.DateTimeFormat().resolvedOptions().timeZone);
       setValue("selectedDays", []);
     }
     if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
