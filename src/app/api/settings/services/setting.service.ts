@@ -22,22 +22,35 @@ export class SettingService {
   async save(requestData: SettingRequest): Promise<void> {
     const currentUser = await getCurrentUser();
 
-    await this.prismaClient.setting.upsert({
+    const settingByUser = await this.prismaClient.setting.findFirst({
       where: {
-        createdById: currentUser.id,
+        createdById: currentUser.id
+      }
+    });
+
+    if (!settingByUser) {
+      await this.prismaClient.setting.create({
+        data: {
+          type: requestData.type,
+          timezone: requestData.timezone,
+          workingHours: requestData.workingHours,
+          message: requestData.message,
+          createdById: currentUser.id,
+        }
+      });
+
+      return;
+    }
+
+    await this.prismaClient.setting.update({
+      where: {
+        id: settingByUser.id
       },
-      update: {
+      data: {
         type: requestData.type,
         timezone: requestData.timezone,
         workingHours: requestData.workingHours,
         message: requestData.message
-      },
-      create: {
-        type: requestData.type,
-        timezone: requestData.timezone,
-        workingHours: requestData.workingHours,
-        message: requestData.message,
-        createdById: currentUser.id
       }
     });
   }
