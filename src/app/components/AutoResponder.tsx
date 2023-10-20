@@ -143,12 +143,11 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     setSaving(true);
     await onSave(data);
     setSaving(false);
+    reset({}, { keepValues: true });
   };
 
   const onReset = () => {
-    console.log(currentSetting.response, "======");
     reset(currentSetting);
-    // setValue("response", currentSetting.response);
   };
 
   return (
