@@ -19,7 +19,7 @@ export async function getCurrentUser(): Promise<MeResponse> {
 }
 
 export function isWithinWorkingHours(timezone: string, workingHours: WorkingHours) {
-  const currentDateTime = ZonedDateTime.now(ZoneId.of(timezone));
+  const currentDateTime = ZonedDateTime.now(ZoneId.of('UTC'));
   const currentDay = currentDateTime.dayOfWeek();
   const workingDay = workingHours.find(workingHour => DayOfWeek.of(workingHour.weekday).equals(currentDay));
 

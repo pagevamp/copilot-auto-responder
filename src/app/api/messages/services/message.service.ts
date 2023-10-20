@@ -5,7 +5,7 @@ import { CopilotAPI } from '@/utils/copilotApiUtils';
 import appConfig from '@/config/app';
 import { SettingResponse } from '@/types/setting';
 import { Message, SendMessageRequestSchema } from '@/types/message';
-import { ZonedDateTime, ZoneId } from '@js-joda/core';
+import { DateTimeFormatter, ZonedDateTime, ZoneId } from '@js-joda/core';
 
 export class MessageService {
   private copilotClient = new CopilotAPI(appConfig.copilotApiKey);
@@ -31,7 +31,7 @@ export class MessageService {
         channelId: message.channelId,
         clientId: client.id,
         createdAt: {
-          gt: ZonedDateTime.now(ZoneId.of('UTC')).minusHours(1).toString()
+          gt: this.subtractHours(new Date(), 1).toISOString()
         }
       },
     });
@@ -53,6 +53,12 @@ export class MessageService {
     }
   }
 
+  subtractHours(date: Date, hours: number) {
+    date.setHours(date.getHours() - hours);
+
+    return date;
+  }
+
   async sendMessage(setting: SettingResponse, message: Message): Promise<void> {
     const messageData = SendMessageRequestSchema.parse({
       text: setting.message,
@@ -60,6 +66,16 @@ export class MessageService {
       channelId: message.channelId
     });
 
-    await this.copilotClient.sendMessage(messageData);
+    await Promise.all([
+      this.copilotClient.sendMessage(messageData),
+      this.prismaClient.message.create({
+        data: {
+          message: setting.message || '',
+          clientId: messageData.senderId,
+          channelId: messageData.channelId,
+          senderId: setting.createdById
+        }
+      })
+    ])
   }
 }
