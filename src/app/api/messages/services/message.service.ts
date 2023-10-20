@@ -1,13 +1,15 @@
 import { SettingService } from '@/app/api/settings/services/setting.service';
 import { getCurrentUser, isWithinWorkingHours } from '@/utils/common';
-import { SettingType } from '@prisma/client';
+import { PrismaClient, SettingType } from '@prisma/client';
 import { CopilotAPI } from '@/utils/copilotApiUtils';
 import appConfig from '@/config/app';
 import { SettingResponse } from '@/types/setting';
 import { Message, SendMessageRequestSchema } from '@/types/message';
+import { ZonedDateTime, ZoneId } from '@js-joda/core';
 
 export class MessageService {
   private copilotClient = new CopilotAPI(appConfig.copilotApiKey);
+  private prismaClient: PrismaClient = new PrismaClient();
 
   async handleSendMessageWebhook(message: Message) {
     const settingService = new SettingService();
@@ -17,15 +19,29 @@ export class MessageService {
       return;
     }
 
-    if (setting?.type === SettingType.ENABLED) {
-      await this.sendMessage(setting, message);
-    }
-
     const copilotClient = new CopilotAPI(appConfig.copilotApiKey);
     const client = await copilotClient.getClient(message.senderId);
 
     if ('code' in client && client.code === 'parameter_invalid') {
       return;
+    }
+
+    const clientMessageCount = await this.prismaClient.message.count({
+      where: {
+        channelId: message.channelId,
+        clientId: client.id,
+        createdAt: {
+          gt: ZonedDateTime.now(ZoneId.of('UTC')).minusHours(1).toString()
+        }
+      },
+    });
+
+    if (clientMessageCount > 0) {
+      return;
+    }
+
+    if (setting?.type === SettingType.ENABLED) {
+      await this.sendMessage(setting, message);
     }
 
     if (!setting?.timezone || !setting?.workingHours) {

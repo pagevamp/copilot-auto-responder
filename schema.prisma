@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
@@ -15,12 +15,22 @@ enum SettingType {
 }
 
 model Setting {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type SettingType
-  timezone String?
-  workingHours Json?	@db.JsonB
-  createdById  String @db.Uuid @unique
-  message String?
-  createdAt DateTime @db.Timestamptz() @default(now()) @ignore
-  updatedAt DateTime @updatedAt @ignore
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type         SettingType
+  timezone     String?
+  workingHours Json?       @db.JsonB
+  createdById  String      @db.Uuid
+  message      String?
+  createdAt    DateTime    @default(now()) @db.Timestamptz()
+  updatedAt    DateTime    @updatedAt @ignore @db.Timestamptz()
+}
+
+model Message {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message   String
+  clientId  String   @db.Uuid
+  channelId String   @db.Uuid
+  senderId  String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @updatedAt @ignore @db.Timestamptz()
 }
