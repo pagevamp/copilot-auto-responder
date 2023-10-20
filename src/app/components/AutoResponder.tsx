@@ -82,17 +82,14 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     watch,
     setValue,
     reset,
-    getValues,
     formState: { isDirty },
-    getFieldState,
   } = methods;
 
   const selectedDays = useFieldArray({
     control: control,
     name: "selectedDays",
   });
-  // const autoRespond = watch("autoRespond");
-  const { autoRespond } = getValues();
+  const autoRespond = watch("autoRespond");
 
   useEffect(() => {
     if (autoRespond === $Enums.SettingType.DISABLED) {
@@ -149,16 +146,14 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
   };
 
   const onReset = () => {
+    console.log(currentSetting.response, "======");
     reset(currentSetting);
+    // setValue("response", currentSetting.response);
   };
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="h-full flex flex-col"
-        onReset={onReset}
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
         <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
           <div className="w-full max-w-[880px] mx-auto">
             <Fieldset
@@ -231,22 +226,22 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
             )}
           </div>
         </div>
-        <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
-          <button
-            type="reset"
-            disabled={!isDirty}
-            className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!isDirty}
-            className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {saving ? "Saving..." : "Save changes"}
-          </button>
-        </div>
+        {isDirty && (
+          <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
+            <button
+              className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+              onClick={onReset}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {saving ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        )}
       </form>
     </FormProvider>
   );
