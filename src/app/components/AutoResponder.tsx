@@ -6,6 +6,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import TimezoneSelect from "react-timezone-select";
 
 import Days from "./Days";
 import SelectField from "./Select";
@@ -180,7 +181,19 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
               >
                 <div>
                   <Typography text="Timezone" className="mb-2" />
+
                   <Controller
+                    name="timezone"
+                    render={({ field: { onChange, value } }) => (
+                      <TimezoneSelect
+                        value={value}
+                        onChange={(selectedTimeZone) => {
+                          onChange(selectedTimeZone.value);
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <Controller
                     name="timezone"
                     render={({ field: { onChange, value } }) => (
                       <SelectField<TIMEZONE>
@@ -191,7 +204,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
                         }}
                       />
                     )}
-                  />
+                  /> */}
                 </div>
                 <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
                   <Typography text="Select days" />
