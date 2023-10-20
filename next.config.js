@@ -1,4 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
 
-module.exports = nextConfig
+const withSvgr = require("next-plugin-svgr");
+const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
+};
+
+module.exports = withSvgr(nextConfig);

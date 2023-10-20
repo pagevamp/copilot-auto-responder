@@ -1,6 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import { SettingRequest, SettingResponse, SettingResponseSchema } from '@/types/setting';
-import { getCurrentUser } from '@/utils/common';
+import { PrismaClient } from "@prisma/client";
+import {
+  SettingRequest,
+  SettingResponse,
+  SettingResponseSchema,
+} from "@/types/setting";
+import { getCurrentUser } from "@/utils/common";
 
 export class SettingService {
   private prismaClient: PrismaClient = new PrismaClient();
@@ -24,8 +28,8 @@ export class SettingService {
 
     const settingByUser = await this.prismaClient.setting.findFirst({
       where: {
-        createdById: currentUser.id
-      }
+        createdById: currentUser.id,
+      },
     });
 
     if (!settingByUser) {
@@ -36,7 +40,7 @@ export class SettingService {
           workingHours: requestData.workingHours,
           message: requestData.message,
           createdById: currentUser.id,
-        }
+        },
       });
 
       return;
@@ -44,14 +48,14 @@ export class SettingService {
 
     await this.prismaClient.setting.update({
       where: {
-        id: settingByUser.id
+        id: settingByUser.id,
       },
       data: {
         type: requestData.type,
         timezone: requestData.timezone,
         workingHours: requestData.workingHours,
-        message: requestData.message
-      }
+        message: requestData.message,
+      },
     });
   }
 }
