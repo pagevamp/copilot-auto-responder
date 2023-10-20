@@ -73,6 +73,8 @@ interface Props {
 
 const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const [saving, setSaving] = useState(false);
+  console.log(currentSetting, "=====");
+
   const methods = useForm<SettingsData>({
     defaultValues: currentSetting,
   });
@@ -193,18 +195,6 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
                       />
                     )}
                   />
-                  {/* <Controller
-                    name="timezone"
-                    render={({ field: { onChange, value } }) => (
-                      <SelectField<TIMEZONE>
-                        value={value}
-                        options={Object.values(TIMEZONE_OPTIONS)}
-                        onValueChange={(value: string) => {
-                          onChange(value);
-                        }}
-                      />
-                    )}
-                  /> */}
                 </div>
                 <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
                   <Typography text="Select days" />
