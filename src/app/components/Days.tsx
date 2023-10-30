@@ -1,5 +1,5 @@
-import { DAYS, SelectedDay, DAY_KEY, DAY_VALUE } from "@/constants";
 import Typography from "./Typography";
+import { DAYS, SelectedDay, DAY_KEY, DAY_VALUE } from "@/constants";
 
 interface Props {
   selectedDays: SelectedDay[];

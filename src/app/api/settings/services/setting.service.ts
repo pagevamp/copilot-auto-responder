@@ -38,6 +38,7 @@ export class SettingService {
         data: {
           type: requestData.type,
           timezone: requestData.timezone,
+          // @ts-ignore
           workingHours: requestData.workingHours,
           message: requestData.message,
           createdById: currentUser.id,
@@ -54,6 +55,7 @@ export class SettingService {
       data: {
         type: requestData.type,
         timezone: requestData.timezone,
+        // @ts-ignore
         workingHours: requestData.workingHours,
         message: requestData.message,
       },

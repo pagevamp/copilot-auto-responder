@@ -1,4 +1,9 @@
 "use client";
+import { z } from "zod";
+import { useEffect, useRef, useState } from "react";
+import TimezoneSelect, { ITimezone } from "react-timezone-select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ErrorBoundary } from "react-error-boundary";
 import {
   Controller,
   FormProvider,
@@ -6,13 +11,21 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import TimezoneSelect, { ITimezone } from "react-timezone-select";
+import {
+  StylesConfig,
+  components,
+  DropdownIndicatorProps,
+  GroupBase,
+} from "react-select";
 
 import Days from "./Days";
+import Fieldset from "./Fieldset";
 import SelectField from "./Select";
+import Typography from "./Typography";
 import WorkingHours from "./WorkingHours";
+import { SettingType } from "@prisma/client";
+import { ChevronDown } from "@/icons";
 import {
-  AUTO_RESPONSE,
   AUTO_RESPONSE_OPTIONS,
   DAYS,
   DAY_VALUE,
@@ -21,21 +34,7 @@ import {
   HOUR,
   SelectedDay,
   SettingsData,
-  TIMEZONE,
-  TIMEZONE_OPTIONS,
 } from "@/constants";
-import { useEffect, useState } from "react";
-import Typography from "./Typography";
-import Fieldset from "./Fieldset";
-import { $Enums } from "@prisma/client";
-
-import {
-  StylesConfig,
-  components,
-  DropdownIndicatorProps,
-  GroupBase,
-} from "react-select";
-import { ChevronDown } from "@/icons";
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -65,18 +64,9 @@ const defaultSelectedDays: SelectedDay[] = [
   },
 ];
 
-const defaultSettingsData: SettingsData = {
-  autoRespond: $Enums.SettingType.DISABLED,
-  timezone: "",
-  selectedDays: [],
-  response:
-    "Thanks for getting in touch. We’re currently out of the office and won’t be able to immediately respond. We’ll get back to you as as soon as we can. ",
-  sender: "",
-};
-
 interface Props {
   onSave(data: SettingsData): Promise<void>;
-  currentSetting: SettingsData;
+  activeSettings: SettingsData;
 }
 const DropdownIndicator = (
   props: DropdownIndicatorProps<ITimezone, false, GroupBase<ITimezone>>
@@ -138,10 +128,38 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
   dropdownIndicator: (styles) => ({ ...styles }),
 };
 
-const AutoResponder = ({ onSave, currentSetting }: Props) => {
+const ValidationSchema = z.object({
+  autoRespond: z.nativeEnum(SettingType),
+  timezone: z.string().nullable().optional(),
+  selectedDays: z
+    .array(
+      z.object({
+        day: z.number(),
+        startHour: z.nativeEnum(HOUR),
+        endHour: z.nativeEnum(HOUR),
+      })
+    )
+    .min(1, "Select at least one day")
+    .max(7)
+    .nullable(),
+  response: z
+    .string()
+    .min(10, "Response can't be less than 10 characters long")
+    .max(2000, "Response can't be more than 2000 characters long")
+    .nullable(),
+  sender: z.string(),
+});
+
+const AutoResponder = ({ onSave, activeSettings }: Props) => {
+  const defaultFormValues = useRef(activeSettings);
   const [saving, setSaving] = useState(false);
+  const [workingHoursErrors, setWorkingHoursErrors] = useState<
+    Record<number, string>
+  >({});
   const methods = useForm<SettingsData>({
-    defaultValues: currentSetting,
+    mode: "onChange",
+    defaultValues: defaultFormValues.current,
+    resolver: zodResolver(ValidationSchema),
   });
   const {
     control,
@@ -150,8 +168,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     watch,
     setValue,
     reset,
-    formState: { isDirty },
-    getValues,
+    formState: { isDirty, errors },
   } = methods;
 
   const selectedDays = useFieldArray({
@@ -162,21 +179,47 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
 
   useEffect(() => {
     if (isDirty) {
-      if (autoRespond === $Enums.SettingType.DISABLED) {
-        setValue("selectedDays", []);
-        setValue("timezone", "");
-        setValue("response", "");
+      if (autoRespond === SettingType.DISABLED) {
+        setValue("selectedDays", null, {
+          shouldValidate: true,
+        });
+        setValue("timezone", null, {
+          shouldValidate: true,
+        });
+        setValue("response", null, {
+          shouldValidate: true,
+        });
       }
-      if (autoRespond === $Enums.SettingType.ENABLED) {
+      if (autoRespond === SettingType.ENABLED) {
+        setValue("timezone", null, {
+          shouldValidate: true,
+        });
+        setValue("selectedDays", null, {
+          shouldValidate: true,
+        });
         setValue(
-          "timezone",
-          getValues().timezone ||
-            Intl.DateTimeFormat().resolvedOptions().timeZone
+          "response",
+          "Thanks for your message. We'll get back to you shortly.",
+          {
+            shouldValidate: true,
+          }
         );
-        setValue("selectedDays", []);
       }
-      if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
-        setValue("selectedDays", defaultSelectedDays);
+      if (autoRespond === SettingType.OUTSIDE_WORKING_HOURS) {
+        setValue("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone, {
+          shouldValidate: true,
+        });
+        setValue("selectedDays", defaultSelectedDays, {
+          shouldValidate: true,
+        });
+
+        setValue(
+          "response",
+          "Thanks for your message. You've reached us outside our working hours. We'll get back to you within 24 hours.",
+          {
+            shouldValidate: true,
+          }
+        );
       }
     }
   }, [autoRespond, setValue]);
@@ -188,6 +231,11 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
 
     if (selectedDayIndex >= 0) {
       selectedDays.remove(selectedDayIndex);
+      setWorkingHoursErrors((existingErrors) => {
+        delete existingErrors[day];
+
+        return existingErrors;
+      });
       return;
     }
 
@@ -198,144 +246,167 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     });
   };
 
-  const getAutoResponseMessage = () => {
-    if (autoRespond === $Enums.SettingType.DISABLED) {
-      return "Set up automatic responses to incoming messages in the Messages App";
-    }
+  const validateWorkingHours = (selectedDays: SelectedDay[]) => {
+    let newErrors = { ...workingHoursErrors };
+    selectedDays.forEach((selectedDay) => {
+      const { startHour, endHour } = selectedDay;
 
-    if (autoRespond === $Enums.SettingType.ENABLED) {
-      return "Set up automatic responses to incoming messages in the Messages App";
-    }
+      if (endHour <= startHour) {
+        newErrors = {
+          ...newErrors,
+          [selectedDay.day]: "End time should be after start time",
+        };
+      } else {
+        delete newErrors[selectedDay.day];
+      }
 
-    if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
-      return " When your clients message you outside of working hours, automatically reply to them.";
-    }
-
-    return "";
+      setWorkingHoursErrors(newErrors);
+    });
+    return Object.keys(newErrors).length < 1;
   };
 
   const onSubmit: SubmitHandler<SettingsData> = async (data) => {
+    const isValidWorkingHours = validateWorkingHours(data.selectedDays || []);
+
+    if (!isValidWorkingHours) {
+      return;
+    }
     setSaving(true);
     await onSave(data);
     setSaving(false);
     reset({}, { keepValues: true });
+    setWorkingHoursErrors({});
+    defaultFormValues.current = data;
   };
 
   const onReset = () => {
-    reset(currentSetting);
+    reset(defaultFormValues.current);
+    setWorkingHoursErrors({});
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
-        <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
-          <div className="w-full max-w-[880px] mx-auto">
-            <Fieldset
-              title="Auto responder configuration"
-              info="Set up automatic responses to incoming messages in the Messages App"
-            >
-              <Typography
-                text="Enable auto response"
-                variant="label"
-                className="mb-1.5 text-text"
-              />
-              <Controller
-                name="autoRespond"
-                render={({ field: { onChange, value } }) => (
-                  <SelectField<$Enums.SettingType>
-                    value={value}
-                    options={AUTO_RESPONSE_OPTIONS}
-                    onValueChange={(value: string) => {
-                      onChange(value);
-                    }}
-                  />
-                )}
-              />
-            </Fieldset>
-            {autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS && (
+    <ErrorBoundary fallback={<div>Something went wrong</div>}>
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="h-full flex flex-col"
+        >
+          <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
+            <div className="w-full max-w-[880px] mx-auto">
               <Fieldset
-                title="Working hours"
-                info="Your automated response will send outside of these hours"
+                title="Auto responder configuration"
+                info="Set up automatic responses to incoming messages in the Messages App"
               >
-                <div>
-                  <Typography
-                    text="Timezone"
-                    variant="label"
-                    className="mb-1.5"
-                  />
-
-                  <Controller
-                    name="timezone"
-                    render={({ field: { onChange, value } }) => (
-                      <TimezoneSelect
-                        value={value}
-                        components={{ DropdownIndicator }}
-                        onChange={(selectedTimeZone) => {
-                          onChange(selectedTimeZone.value);
-                        }}
-                        styles={colourStyles}
+                <Typography text="Enable auto response"  variant="label"
+                            className="mb-1.5 text-text" />
+                <Controller
+                  name="autoRespond"
+                  render={({ field: { onChange, value } }) => (
+                    <SelectField<SettingType>
+                      value={value}
+                      options={AUTO_RESPONSE_OPTIONS}
+                      onValueChange={(value: string) => {
+                        onChange(value);
+                      }}
+                    />
+                  )}
+                />
+              </Fieldset>
+              {autoRespond === SettingType.OUTSIDE_WORKING_HOURS && (
+                <Fieldset
+                  title="Working hours"
+                  info="Your automated response will send outside of these hours"
+                >
+                  <div>
+                    <Typography text="Timezone"  variant="label"
+                                className="mb-1.5" />
+                    <Controller
+                      name="timezone"
+                      render={({ field: { onChange, value } }) => (
+                        <TimezoneSelect
+                          value={value || ""}
+                          components={{ DropdownIndicator }}
+                          onChange={(selectedTimeZone) => {
+                            onChange(selectedTimeZone.value);
+                          }}
+                          styles={colourStyles}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
+                    <Typography text="Select days" variant="label" />
+                    <div>
+                      <Days
+                        selectedDays={selectedDays.fields}
+                        onDayClick={toggleSelectedDay}
                       />
-                    )}
-                  />
-                </div>
-                <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
-                  <Typography text="Select days" variant="label" />
-                  <Days
+                      {errors.selectedDays && (
+                        <p className="text-right text-red-500 text-xs mt-1">
+                          {errors.selectedDays.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <WorkingHours
                     selectedDays={selectedDays.fields}
-                    onDayClick={toggleSelectedDay}
+                    errors={workingHoursErrors}
                   />
-                </div>
-                <WorkingHours selectedDays={selectedDays.fields} />
-              </Fieldset>
-            )}
-            {autoRespond !== $Enums.SettingType.DISABLED && (
-              <Fieldset
-                title="Response message"
-                info="Customize the automated response message"
+                </Fieldset>
+              )}
+              {autoRespond !== SettingType.DISABLED && (
+                <Fieldset
+                  title="Response message"
+                  info="Customize the automated response message"
+                >
+                  <Typography text="Response"   variant="label"
+                              className="mb-1.5" />
+                  <div className="mb-8">
+                    <textarea
+                      placeholder="Your automated response"
+                      className={`block w-full p-3 mb-1 text-[14px] font-normal rounded-md bg-transparent border resize-none ${
+                        errors.response ? "border-red-500" : " border-gray-300"
+                      }`}
+                      {...register("response")}
+                    />
+                    {errors.response && (
+                      <p className="text-red-500 text-xs">
+                        {errors.response.message}
+                      </p>
+                    )}
+                  </div>
+                  <Typography text="Sent by"  variant="label"
+                              className="mb-1.5 mt-6" />
+                  <input
+                    disabled
+                    placeholder="Your name"
+                    className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 disabled:text-gray-500"
+                    {...register("sender")}
+                  />
+                </Fieldset>
+              )}
+            </div>
+          </div>
+          {isDirty && (
+            <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
+              <button
+                className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+                onClick={onReset}
               >
-                <Typography
-                  text="Response"
-                  variant="label"
-                  className="mb-1.5"
-                />
-                <textarea
-                  placeholder="Your automated response"
-                  className="block w-full p-3 text-[14px] font-normal rounded bg-transparent border border-border hover:border-border-hover outline-none focus:outline-none focus:ring-1 focus:ring-inset focus:ring-black  mb-6 "
-                  {...register("response")}
-                />
-                <Typography
-                  text="Sent by"
-                  variant="label"
-                  className="mb-1.5 mt-6"
-                />
-                <input
-                  disabled
-                  placeholder="Your name"
-                  className="block w-full px-3.5 py-2 text-body-md rounded bg-transparent border border-gray-300 mb-0 disabled:text-text-disabled"
-                  {...register("sender")}
-                />
-              </Fieldset>
-            )}
-          </div>
-        </div>
-        {isDirty && (
-          <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
-            <button
-              className="h-8 py-1 px-3 rounded min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
-              onClick={onReset}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="h-8 py-1 px-3 bg-slate-800 rounded min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              {saving ? "Saving..." : "Save changes"}
-            </button>
-          </div>
-        )}
-      </form>
-    </FormProvider>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={!!Object.keys(errors).length}
+                className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {saving ? "Saving..." : "Save changes"}
+              </button>
+            </div>
+          )}
+        </form>
+      </FormProvider>
+    </ErrorBoundary>
   );
 };
 

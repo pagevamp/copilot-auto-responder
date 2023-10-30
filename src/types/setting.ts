@@ -12,9 +12,9 @@ export type WorkingHours = z.infer<typeof WorkingHoursSchema>;
 
 export const SettingRequestSchema = z.object({
   type: z.nativeEnum(SettingType),
-  timezone: z.string().optional(),
-  workingHours: WorkingHoursSchema.optional(),
-  message: z.string().optional(),
+  timezone: z.string().nullable(),
+  workingHours: WorkingHoursSchema.nullable(),
+  message: z.string().nullable(),
 });
 export type SettingRequest = z.infer<typeof SettingRequestSchema>;
 
@@ -24,6 +24,6 @@ export const SettingResponseSchema = z.object({
   timezone: z.string().nullable(),
   workingHours: WorkingHoursSchema.nullable(),
   createdById: z.string().uuid(),
-  message: z.string().optional(),
+  message: z.string().nullable(),
 });
 export type SettingResponse = z.infer<typeof SettingResponseSchema>;
