@@ -31,7 +31,7 @@ export class MessageService {
         channelId: message.channelId,
         clientId: client.id,
         createdAt: {
-          gt: this.subtractHours(new Date(), 1).toISOString()
+          gte: this.subtractHours(new Date(), 1)
         }
       },
     });
@@ -48,7 +48,7 @@ export class MessageService {
       return;
     }
 
-    if (isWithinWorkingHours(setting.timezone, setting.workingHours)) {
+    if (!isWithinWorkingHours(setting.timezone, setting.workingHours)) {
       await this.sendMessage(setting, message);
     }
   }
@@ -71,7 +71,7 @@ export class MessageService {
       this.prismaClient.message.create({
         data: {
           message: setting.message || '',
-          clientId: messageData.senderId,
+          clientId: message.senderId,
           channelId: messageData.channelId,
           senderId: setting.createdById
         }

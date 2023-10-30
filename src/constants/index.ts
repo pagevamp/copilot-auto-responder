@@ -17,50 +17,50 @@ export const AUTO_RESPONSE_OPTIONS: SelectOption<$Enums.SettingType>[] = [
 ];
 
 export const DAYS = {
-  SUNDAY: 1,
-  MONDAY: 2,
-  TUESDAY: 3,
-  WEDNESDAY: 4,
-  THURSDAY: 5,
-  FRIDAY: 6,
-  SATURDAY: 7,
+  SUNDAY: 7,
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
 };
 
 export enum HOUR {
-  "0AM" = "0:00 AM",
-  "1AM" = "1:00 AM",
-  "2AM" = "2:00 AM",
-  "3AM" = "3:00 AM",
-  "4AM" = "4:00 AM",
-  "5AM" = "5:00 AM",
-  "6AM" = "6:00 AM",
-  "7AM" = "7:00 AM",
-  "8AM" = "8:00 AM",
-  "9AM" = "9:00 AM",
-  "10AM" = "10:00 AM",
-  "11AM" = "11:00 AM",
-  "12PM" = "12:00 PM",
-  "1PM" = "1:00 PM",
-  "2PM" = "2:00 PM",
-  "3PM" = "3:00 PM",
-  "4PM" = "4:00 PM",
-  "5PM" = "5:00 PM",
-  "6PM" = "6:00 PM",
-  "7PM" = "7:00 PM",
-  "8PM" = "8:00 PM",
-  "9PM" = "9:00 PM",
-  "10PM" = "10:00 PM",
-  "11PM" = "11:00 PM",
+  "0:00-AM" = "00:00",
+  "1:00-AM" = "01:00",
+  "2:00-AM" = "02:00",
+  "3:00-AM" = "03:00",
+  "4:00-AM" = "04:00",
+  "5:00-AM" = "05:00",
+  "6:00-AM" = "06:00",
+  "7:00-AM" = "07:00",
+  "8:00-AM" = "08:00",
+  "9:00-AM" = "09:00",
+  "10:00-AM" = "10:00",
+  "11:00-AM" = "11:00",
+  "12:00-PM" = "12:00",
+  "1:00-PM" = "13:00",
+  "2:00-PM" = "14:00",
+  "3:00-PM" = "15:00",
+  "4:00-PM" = "16:00",
+  "5:00-PM" = "17:00",
+  "6:00-PM" = "18:00",
+  "7:00-PM" = "19:00",
+  "8:00-PM" = "20:00",
+  "9:00-PM" = "21:00",
+  "10:00-PM" = "22:00",
+  "11:00-PM" = "23:00",
 }
 
-export const DEFAULT_START_HOUR = HOUR["9AM"];
-export const DEFAULT_END_HOUR = HOUR["5PM"];
+export const DEFAULT_START_HOUR = HOUR["9:00-AM"];
+export const DEFAULT_END_HOUR = HOUR["5:00-PM"];
 
-export const HOURS_SELECT_OPTIONS: SelectOption<HOUR>[] = Object.values(
+export const HOURS_SELECT_OPTIONS: SelectOption<HOUR>[] = Object.entries(
   HOUR
-).map((hour) => ({
-  label: hour,
-  value: hour,
+).map(([key, value]) => ({
+  label: key.replace('-', ' '),
+  value: value,
 }));
 
 export type DAY_VALUE = (typeof DAYS)[keyof typeof DAYS];
