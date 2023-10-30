@@ -14,12 +14,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result.error.issues, { status: 422 });
   }
 
-  const signature = crypto.createHmac("sha256", appConfig.webhookSigningSecret).update(rawBody).digest("hex");
+  if (appConfig.webhookSigningSecret) {
+    const signature = crypto.createHmac("sha256", appConfig.webhookSigningSecret).update(rawBody).digest("hex");
 
-  if (signature !== request.headers.get('x-copilot-signature')) {
-    return NextResponse.json({
-      message: 'Invalid signature'
-    }, { status: 400 })
+    if (signature !== request.headers.get('x-copilot-signature')) {
+      return NextResponse.json({
+        message: 'Invalid signature'
+      }, { status: 400 })
+    }
   }
 
   const messageService = new MessageService();
