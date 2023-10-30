@@ -1,5 +1,6 @@
 import { Controller } from "react-hook-form";
 
+import Typography from "./Typography";
 import SelectField from "./Select";
 import {
   DAYS,
@@ -8,7 +9,6 @@ import {
   HOURS_SELECT_OPTIONS,
   SelectedDay,
 } from "@/constants";
-import Typography from "./Typography";
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -60,7 +60,7 @@ const WorkingHours = ({ selectedDays }: Props) => {
                         onChange(value);
                       }}
                     />
-                  )
+                  );
                 }}
               />
             </div>

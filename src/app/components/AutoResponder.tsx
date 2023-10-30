@@ -1,4 +1,6 @@
 "use client";
+import { useEffect, useState } from "react";
+import TimezoneSelect from "react-timezone-select";
 import {
   Controller,
   FormProvider,
@@ -6,28 +8,22 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import TimezoneSelect from "react-timezone-select";
 
 import Days from "./Days";
+import Fieldset from "./Fieldset";
 import SelectField from "./Select";
+import Typography from "./Typography";
+import { $Enums } from "@prisma/client";
 import WorkingHours from "./WorkingHours";
 import {
-  AUTO_RESPONSE,
   AUTO_RESPONSE_OPTIONS,
   DAYS,
   DAY_VALUE,
   DEFAULT_END_HOUR,
   DEFAULT_START_HOUR,
-  HOUR,
   SelectedDay,
   SettingsData,
-  TIMEZONE,
-  TIMEZONE_OPTIONS,
 } from "@/constants";
-import { useEffect, useState } from "react";
-import Typography from "./Typography";
-import Fieldset from "./Fieldset";
-import { $Enums } from "@prisma/client";
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -62,7 +58,7 @@ const defaultSettingsData: SettingsData = {
   timezone: "",
   selectedDays: [],
   response:
-    "Thanks for getting in touch. We’re currently out of the office and won’t be able to immediately respond. We’ll get back to you as as soon as we can. ",
+    "Thanks for getting in touch. We’re currently out of the office and won’t be able to immediately respond. We’ll get back to you as as soon as we can.",
   sender: "",
 };
 
@@ -84,7 +80,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     setValue,
     reset,
     formState: { isDirty },
-    getValues
+    getValues,
   } = methods;
 
   const selectedDays = useFieldArray({
@@ -94,17 +90,26 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const autoRespond = watch("autoRespond");
 
   useEffect(() => {
-    if(isDirty) {
+    if (isDirty) {
       if (autoRespond === $Enums.SettingType.DISABLED) {
         setValue("selectedDays", []);
-        setValue("timezone", '');
+        setValue("timezone", "");
         setValue("response", "");
       }
       if (autoRespond === $Enums.SettingType.ENABLED) {
-        setValue("timezone", getValues().timezone || Intl.DateTimeFormat().resolvedOptions().timeZone);
+        setValue(
+          "timezone",
+          getValues().timezone ||
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
         setValue("selectedDays", []);
       }
       if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
+        setValue(
+          "timezone",
+          getValues().timezone ||
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
         setValue("selectedDays", defaultSelectedDays);
       }
     }
@@ -137,7 +142,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     }
 
     if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
-      return " When your clients message you outside of working hours, automatically reply to them.";
+      return "When your clients message you outside of working hours, automatically reply to them.";
     }
 
     return "";
@@ -184,7 +189,6 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
               >
                 <div>
                   <Typography text="Timezone" className="mb-2" />
-
                   <Controller
                     name="timezone"
                     render={({ field: { onChange, value } }) => (

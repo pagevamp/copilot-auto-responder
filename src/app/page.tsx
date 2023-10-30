@@ -1,15 +1,15 @@
+import { $Enums } from "@prisma/client";
+import { getCurrentUser } from "@/utils/common";
+import { HOUR, SettingsData } from "@/constants";
+import { SettingResponse } from "@/types/setting";
 import AutoResponder from "./components/AutoResponder";
+import { SettingService } from "./api/settings/services/setting.service";
 import {
   Client,
   Company,
   CopilotAPI,
   MeResponse,
 } from "@/utils/copilotApiUtils";
-import { HOUR, SettingsData, TIMEZONE } from "@/constants";
-import { SettingService } from "./api/settings/services/setting.service";
-import { getCurrentUser } from "@/utils/common";
-import { SettingResponse } from "@/types/setting";
-import { $Enums } from "@prisma/client";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -42,7 +42,8 @@ const populateSettingsFormData = (
   return {
     autoRespond: settings.type || $Enums.SettingType.DISABLED,
     response: settings.message || "",
-    timezone: settings.timezone || "",
+    timezone:
+      settings.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     selectedDays: (settings.workingHours || [])?.map((workingHour) => ({
       day: workingHour.weekday,
       startHour: workingHour.startTime as HOUR,
@@ -59,7 +60,6 @@ export default async function Page({
   const { me } = await getContent(searchParams);
 
   const setting = await settingsService.findByUserId(me?.id as string);
-
   const saveSettings = async (data: SettingsData) => {
     "use server";
 
