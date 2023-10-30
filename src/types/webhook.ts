@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const WebhookSchema = z.object({
   eventType: z.string(),
-  created: z.string(),
-  object: z.string(),
+  created: z.string().optional(),
+  object: z.string().optional(),
   data: z.unknown(),
 });
