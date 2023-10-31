@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const MessageSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   object: z.literal('message'),
   senderId: z.string().uuid(),
   createdAt: z.string().datetime(),
