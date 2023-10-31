@@ -42,6 +42,8 @@ export class MessageService {
 
     if (setting?.type === SettingType.ENABLED) {
       await this.sendMessage(setting, message);
+
+      return;
     }
 
     if (!setting?.timezone || !setting?.workingHours) {
