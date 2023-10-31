@@ -163,7 +163,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
               title="Auto responder configuration"
               info="Set up automatic responses to incoming messages in the Messages App"
             >
-              <Typography text="Enable auto response" className="mb-2" />
+              <Typography text="Enable auto response" className="mb-1.5 text-text" />
               <Controller
                 name="autoRespond"
                 render={({ field: { onChange, value } }) => (
@@ -212,17 +212,17 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
                 title="Response message"
                 info="Customize the automated response message"
               >
-                <Typography text="Response" className="mb-2" />
+                <Typography text="Response" className="mb-1.5" />
                 <textarea
                   placeholder="Your automated response"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 resize-none"
+                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-6"
                   {...register("response")}
                 />
-                <Typography text="Sent by" className="mb-2 mt-6" />
+                <Typography text="Sent by" className="mb-1.5 mt-6" />
                 <input
                   disabled
                   placeholder="Your name"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 disabled:text-gray-500"
+                  className="block w-full p-3 text-md rounded-md bg-transparent border border-gray-300 mb-0 disabled:text-gray-500"
                   {...register("sender")}
                 />
               </Fieldset>
