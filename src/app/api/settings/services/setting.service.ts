@@ -5,9 +5,10 @@ import {
   SettingResponseSchema,
 } from "@/types/setting";
 import { getCurrentUser } from "@/utils/common";
+import DBClient from '@/lib/db';
 
 export class SettingService {
-  private prismaClient: PrismaClient = new PrismaClient();
+  private prismaClient: PrismaClient = DBClient.getInstance();
 
   async findByUserId(createdById: string): Promise<SettingResponse | null> {
     const setting = await this.prismaClient.setting.findFirst({

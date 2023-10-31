@@ -5,11 +5,11 @@ import { CopilotAPI } from '@/utils/copilotApiUtils';
 import appConfig from '@/config/app';
 import { SettingResponse } from '@/types/setting';
 import { Message, SendMessageRequestSchema } from '@/types/message';
-import { DateTimeFormatter, ZonedDateTime, ZoneId } from '@js-joda/core';
+import DBClient from '@/lib/db';
 
 export class MessageService {
   private copilotClient = new CopilotAPI(appConfig.copilotApiKey);
-  private prismaClient: PrismaClient = new PrismaClient();
+  private prismaClient: PrismaClient = DBClient.getInstance();
 
   async handleSendMessageWebhook(message: Message) {
     const settingService = new SettingService();
