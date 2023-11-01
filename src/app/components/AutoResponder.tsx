@@ -6,7 +6,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import TimezoneSelect from "react-timezone-select";
+import TimezoneSelect, { ITimezone } from "react-timezone-select";
 
 import Days from "./Days";
 import SelectField from "./Select";
@@ -28,6 +28,14 @@ import { useEffect, useState } from "react";
 import Typography from "./Typography";
 import Fieldset from "./Fieldset";
 import { $Enums } from "@prisma/client";
+
+import {
+  StylesConfig,
+  components,
+  DropdownIndicatorProps,
+  GroupBase,
+} from "react-select";
+import { ChevronDown } from "@/icons";
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -70,6 +78,65 @@ interface Props {
   onSave(data: SettingsData): Promise<void>;
   currentSetting: SettingsData;
 }
+const DropdownIndicator = (
+  props: DropdownIndicatorProps<ITimezone, false, GroupBase<ITimezone>>
+) => {
+  return (
+    <components.DropdownIndicator {...props}>
+      <ChevronDown />
+    </components.DropdownIndicator>
+  );
+};
+
+const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
+  control: (styles, state) => ({
+    ...styles,
+    backgroundColor: "white",
+    fontWeight: "400",
+    fontSize: "0.875rem",
+    lineHeight: "1.57",
+    paddingInlineStart: "0.125rem",
+    paddingInlineEnd: "0.375rem",
+    borderColor: state.isFocused ? "#212B36" : "none",
+    boxShadow: state.isFocused ? "#212B36" : "none",
+    ":hover": {
+      ...styles[":hover"],
+      borderColor: state.isFocused ? "#C9CBCD" : "#C9CBCD",
+    },
+  }),
+
+  menu: (styles) => ({ ...styles, borderColor: "#DFE1E4", overflow: "hidden" }),
+  option: (styles, { isDisabled }) => {
+    return {
+      ...styles,
+      backgroundColor: "white",
+      color: "#212B36",
+      cursor: isDisabled ? "not-allowed" : "default",
+      ":hover": {
+        ...styles[":hover"],
+        outlineColor: "#F8F9FB",
+      },
+
+      ":focus": {
+        ...styles[":focus"],
+        outlineColor: "black",
+      },
+      ":active": {
+        ...styles[":active"],
+        backgroundColor: "#F8F9FB",
+      },
+      fontSize: "0.875rem",
+      lineHeight: "1.57",
+      fontWeight: "400",
+    };
+  },
+  input: (styles) => ({ ...styles, margin: "0px" }),
+  // placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
+  // singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
+  clearIndicator: (styles) => ({ ...styles, display: "none" }),
+  indicatorSeparator: (styles) => ({ ...styles, display: "none" }),
+  dropdownIndicator: (styles) => ({ ...styles }),
+};
 
 const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const [saving, setSaving] = useState(false);
@@ -84,7 +151,7 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
     setValue,
     reset,
     formState: { isDirty },
-    getValues
+    getValues,
   } = methods;
 
   const selectedDays = useFieldArray({
@@ -94,14 +161,18 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
   const autoRespond = watch("autoRespond");
 
   useEffect(() => {
-    if(isDirty) {
+    if (isDirty) {
       if (autoRespond === $Enums.SettingType.DISABLED) {
         setValue("selectedDays", []);
-        setValue("timezone", '');
+        setValue("timezone", "");
         setValue("response", "");
       }
       if (autoRespond === $Enums.SettingType.ENABLED) {
-        setValue("timezone", getValues().timezone || Intl.DateTimeFormat().resolvedOptions().timeZone);
+        setValue(
+          "timezone",
+          getValues().timezone ||
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
         setValue("selectedDays", []);
       }
       if (autoRespond === $Enums.SettingType.OUTSIDE_WORKING_HOURS) {
@@ -163,7 +234,11 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
               title="Auto responder configuration"
               info="Set up automatic responses to incoming messages in the Messages App"
             >
-              <Typography text="Enable auto response" className="mb-2" />
+              <Typography
+                text="Enable auto response"
+                variant="label"
+                className="mb-1.5 text-text"
+              />
               <Controller
                 name="autoRespond"
                 render={({ field: { onChange, value } }) => (
@@ -183,22 +258,28 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
                 info="Your automated response will send outside of these hours"
               >
                 <div>
-                  <Typography text="Timezone" className="mb-2" />
+                  <Typography
+                    text="Timezone"
+                    variant="label"
+                    className="mb-1.5"
+                  />
 
                   <Controller
                     name="timezone"
                     render={({ field: { onChange, value } }) => (
                       <TimezoneSelect
                         value={value}
+                        components={{ DropdownIndicator }}
                         onChange={(selectedTimeZone) => {
                           onChange(selectedTimeZone.value);
                         }}
+                        styles={colourStyles}
                       />
                     )}
                   />
                 </div>
                 <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
-                  <Typography text="Select days" />
+                  <Typography text="Select days" variant="label" />
                   <Days
                     selectedDays={selectedDays.fields}
                     onDayClick={toggleSelectedDay}
@@ -212,17 +293,25 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
                 title="Response message"
                 info="Customize the automated response message"
               >
-                <Typography text="Response" className="mb-2" />
+                <Typography
+                  text="Response"
+                  variant="label"
+                  className="mb-1.5"
+                />
                 <textarea
                   placeholder="Your automated response"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 resize-none"
+                  className="block w-full p-3 text-[14px] font-normal rounded bg-transparent border border-border hover:border-border-hover outline-none focus:outline-none focus:ring-1 focus:ring-inset focus:ring-black  mb-6 "
                   {...register("response")}
                 />
-                <Typography text="Sent by" className="mb-2 mt-6" />
+                <Typography
+                  text="Sent by"
+                  variant="label"
+                  className="mb-1.5 mt-6"
+                />
                 <input
                   disabled
                   placeholder="Your name"
-                  className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 disabled:text-gray-500"
+                  className="block w-full px-3.5 py-2 text-body-md rounded bg-transparent border border-gray-300 mb-0 disabled:text-text-disabled"
                   {...register("sender")}
                 />
               </Fieldset>
@@ -232,14 +321,14 @@ const AutoResponder = ({ onSave, currentSetting }: Props) => {
         {isDirty && (
           <div className="flex items-center justify-end gap-3 py-[14px] px-[20px] border-t border-gray-300">
             <button
-              className="h-8 py-1 px-3 rounded-md min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-8 py-1 px-3 rounded min-w-[70px] bg-white border border-gray-300 text-sm disabled:cursor-not-allowed disabled:opacity-70"
               onClick={onReset}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-8 py-1 px-3 bg-slate-800 rounded min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
             >
               {saving ? "Saving..." : "Save changes"}
             </button>

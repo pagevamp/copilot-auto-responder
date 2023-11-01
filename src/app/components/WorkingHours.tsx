@@ -29,6 +29,7 @@ const WorkingHours = ({ selectedDays }: Props) => {
         return (
           <li key={day} className="flex items-center">
             <Typography
+              variant="label"
               text={day.toLocaleLowerCase()}
               className="capitalize flex-1"
             />
@@ -60,7 +61,7 @@ const WorkingHours = ({ selectedDays }: Props) => {
                         onChange(value);
                       }}
                     />
-                  )
+                  );
                 }}
               />
             </div>
