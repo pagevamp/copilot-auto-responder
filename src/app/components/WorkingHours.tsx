@@ -1,5 +1,6 @@
 import { Controller } from "react-hook-form";
 
+import Typography from "./Typography";
 import SelectField from "./Select";
 import {
   DAYS,
@@ -8,13 +9,13 @@ import {
   HOURS_SELECT_OPTIONS,
   SelectedDay,
 } from "@/constants";
-import Typography from "./Typography";
 
 interface Props {
   selectedDays: SelectedDay[];
+  errors: Record<number, string>;
 }
 
-const WorkingHours = ({ selectedDays }: Props) => {
+const WorkingHours = ({ selectedDays, errors }: Props) => {
   return (
     <ul className="flex flex-col gap-6">
       {Object.keys(DAYS).map((day: DAY_KEY | string) => {
@@ -26,33 +27,35 @@ const WorkingHours = ({ selectedDays }: Props) => {
           return null;
         }
 
+        const error = errors[DAYS[day as DAY_KEY]];
+
         return (
-          <li key={day} className="flex items-center">
-            <Typography
-              variant="label"
-              text={day.toLocaleLowerCase()}
-              className="capitalize flex-1"
-            />
-            <div className="w-1/4 min-w-[100px] max-w-[200px]">
-              <Controller
-                name={`selectedDays[${selectedDayIndex}].startHour`}
-                render={({ field: { onChange, value } }) => (
-                  <SelectField<HOUR>
-                    value={value}
-                    options={HOURS_SELECT_OPTIONS}
-                    className="rounded-tr-none rounded-br-none border-r-0"
-                    onValueChange={(value: string) => {
-                      onChange(value);
-                    }}
-                  />
-                )}
+          <li key={day}>
+            <div className="flex items-center">
+              <Typography
+                text={day.toLocaleLowerCase()}
+                className="capitalize flex-1"
+                variant="label"
               />
-            </div>
-            <div className="w-1/4 min-w-[100px] max-w-[200px]">
-              <Controller
-                name={`selectedDays[${selectedDayIndex}].endHour`}
-                render={({ field: { onChange, value } }) => {
-                  return (
+              <div className="w-1/4 min-w-[100px] max-w-[200px]">
+                <Controller
+                  name={`selectedDays[${selectedDayIndex}].startHour`}
+                  render={({ field: { onChange, value } }) => (
+                    <SelectField<HOUR>
+                      value={value}
+                      options={HOURS_SELECT_OPTIONS}
+                      className="rounded-tr-none rounded-br-none border-r-0"
+                      onValueChange={(value: string) => {
+                        onChange(value);
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="w-1/4 min-w-[100px] max-w-[200px]">
+                <Controller
+                  name={`selectedDays[${selectedDayIndex}].endHour`}
+                  render={({ field: { onChange, value } }) => (
                     <SelectField<HOUR>
                       value={value}
                       options={HOURS_SELECT_OPTIONS}
@@ -61,11 +64,13 @@ const WorkingHours = ({ selectedDays }: Props) => {
                         onChange(value);
                       }}
                     />
-                  );
-                }}
-              />
+                  )}
+                />
+              </div>
             </div>
-            <span></span>
+            {errors && (
+              <p className="text-right text-red-500 text-xs mt-1">{error}</p>
+            )}
           </li>
         );
       })}
