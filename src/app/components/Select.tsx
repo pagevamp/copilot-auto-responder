@@ -21,7 +21,7 @@ const SelectField = <V,>({ options, value, onValueChange, className = "" }: Prop
     return (
         <Select.Root value={value} onValueChange={onValueChange}>
             <Select.Trigger
-                className={`w-full flex items-center justify-between border border-border hover:border-border-hover rounded px-3.5 text-text text-md leading-none h-[38px] gap-[5px] bg-transparent text-violet11 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none ${className}`}
+                className={`w-full flex items-center justify-between border border-border hover:border-border-hover rounded px-3.5 text-text text-body-md leading-none h-[38px] gap-[5px] bg-transparent text-violet11 hover:bg-mauve3 focus:shadow-[0_0_0_1px] focus:shadow-black data-[placeholder]:text-violet9 outline-none ${className}`}
                 aria-label="Food"
             >
                 <Select.Value
@@ -35,32 +35,29 @@ const SelectField = <V,>({ options, value, onValueChange, className = "" }: Prop
                     <ChevronDown />
                 </Select.Icon>
             </Select.Trigger>
-            <Select.Portal>
-                <Select.Content
-                    collisionPadding={0}
-                    sideOffset={0}
-                    // position="popper"
-                    className="overflow-hidden bg-white rounded shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]"
-                >
-                    <Select.ScrollUpButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
-                        {/* <ChevronUpIcon /> */}
-                    </Select.ScrollUpButton>
-                    <Select.Viewport className="p-0">
-                        {options.map(({ value, label }) => (
-                            <SelectItem
-                                value={value}
-                                key={value}
-                                {...(selectedOption?.value === value ? { "data-highlighted": true } : {})}
-                            >
-                                {label}
-                            </SelectItem>
-                        ))}
-                    </Select.Viewport>
-                    <Select.ScrollDownButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
-                        {/* <ChevronDownIcon /> */}
-                    </Select.ScrollDownButton>
-                </Select.Content>
-            </Select.Portal>
+
+            <Select.Content
+                // position="popper"
+                className="overflow-hidden bg-white border rounded border-border !m-0 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]"
+            >
+                <Select.ScrollUpButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
+                    {/* <ChevronUpIcon />  */}
+                </Select.ScrollUpButton>
+                <Select.Viewport className="p-0">
+                    {options.map(({ value, label }) => (
+                        <SelectItem
+                            value={value}
+                            key={value}
+                            {...(selectedOption?.value === value ? { "data-highlighted": true } : {})}
+                        >
+                            {label}
+                        </SelectItem>
+                    ))}
+                </Select.Viewport>
+                <Select.ScrollDownButton className="flex items-center justify-center h-[25px] bg-white text-violet11 cursor-default">
+                    {/* <ChevronDownIcon /> */}
+                </Select.ScrollDownButton>
+            </Select.Content>
         </Select.Root>
     );
 };
@@ -69,7 +66,7 @@ const SelectItem = React.forwardRef<any, Select.SelectItemProps>(({ children, cl
     return (
         <Select.Item
             className={
-                "text-md hover:bg-gray-100 leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1 cursor-pointer"
+                "text-body-md py-2 hover:bg-gray-100 leading-none text-violet11 rounded flex items-center pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1 cursor-pointer"
             }
             {...props}
             ref={forwardedRef}

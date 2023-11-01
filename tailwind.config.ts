@@ -7,41 +7,7 @@ const config: Config = {
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
-        fontSize: {
-          '4-xl': ['2.735rem', {
-            lineHeight: '1.21',
-            fontWeight: '500',
-          }],
-          '3-xl': ['1.875rem', {
-            lineHeight: '1.27',            
-            fontWeight: '500',
-          }],
-          '2-xl': ['1.5rem', {
-            lineHeight: '1.33',            
-            fontWeight: '500',
-          }],
-          'xl': ['1.25rem', {
-            lineHeight: '1.4',            
-            fontWeight: '500',
-          }],
-          'lg': ['1rem', {
-            lineHeight: '1.5',            
-          }],
-          'md': ['.875rem', {
-            lineHeight: '1.57',            
-          }],
-          'sm': ['.75rem', {
-            lineHeight: '1.66',            
-          }],
-          'xs': ['.625rem', {
-            lineHeight: '1.8',            
-          }],
-        },
         extend: {
-            backgroundImage: {
-                "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-                "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-            },
             colors: {
                 gray: {
                     "100": "#F8F9FB",
@@ -67,6 +33,56 @@ const config: Config = {
                 "border-disabled": "#EFF1F4",
                 "border-active": "#212B36"
             },
+            fontSize: {
+              'heading-4xl': ['2.735rem', {
+                lineHeight: '1.21',
+                fontWeight: '500',
+              }],
+              'heading-3xl': ['1.875rem', {
+                lineHeight: '1.27',            
+                fontWeight: '500',
+              }],
+              'heading-2xl': ['1.5rem', {
+                lineHeight: '1.33',            
+                fontWeight: '500',
+              }],
+              'heading-xl': ['1.25rem', {
+                lineHeight: '1.4',            
+                fontWeight: '500',
+              }],
+              'heading-lg': ['1rem', {
+                lineHeight: '1.5',   
+                fontWeight: '500',         
+              }],
+              'heading-md': ['.875rem', {
+                lineHeight: '1.57',            
+                fontWeight: '500',
+              }],
+              'heading-sm': ['.75rem', {
+                lineHeight: '1.66',     
+                fontWeight: '500',       
+              }],
+              'heading-xs': ['.625rem', {
+                lineHeight: '1.8',
+                fontWeight: '500',            
+              }],
+              'body-lg': ['1rem', {
+                lineHeight: '1.5',
+                fontWeight: '400',            
+              }],
+              'body-md': ['.875rem', {
+                lineHeight: '1.57',
+                fontWeight: '400',            
+              }],
+              'body-sm': ['.75rem', {
+                lineHeight: '1.66',
+                fontWeight: '400',            
+              }],
+              'body-xs': ['.625rem', {
+                lineHeight: '1.8',
+                fontWeight: '400',            
+              }],
+            },            
         },
     },
     plugins: [],

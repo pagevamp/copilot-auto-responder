@@ -15,13 +15,13 @@ const Days = ({ selectedDays, onDayClick }: Props) => {
                     <li
                         key={day}
                         onClick={() => onDayClick(DAYS[day as DAY_KEY])}
-                        className={`w-8 h-8 flex items-center justify-center rounded-full 
-        uppercase text-center leading-8 ${isSelected ? "bg-slate-800" : "bg-slate-300"} ${
-                            isSelected ? "text-white" : ""
-                        } cursor-pointer hover:bg-slate-400
+                        className={`w-8 h-8 flex  items-center justify-center rounded-full 
+        uppercase text-center leading-8 ${isSelected ? "bg-text" : "bg-border"} ${
+                            isSelected ? "text-white" : "text-text"
+                        } cursor-pointer hover:bg-text hover:text-white
       `}
                     >
-                        <Typography text={day.charAt(0)} />
+                        <Typography className="text-heading-md" text={day.charAt(0)} />
                     </li>
                 );
             })}
