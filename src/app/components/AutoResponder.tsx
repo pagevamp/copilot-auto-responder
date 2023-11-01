@@ -82,7 +82,8 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
         fontWeight: "400",
         fontSize: "0.875rem",
         lineHeight: "1.57",
-        paddingInline: "0.125rem",
+        paddingInlineStart: "0.125rem",
+        paddingInlineEnd: "0.375rem",
         borderColor: state.isFocused ? "#212B36" : "none",
         boxShadow: state.isFocused ? "#212B36" : "none",
         ":hover": {
