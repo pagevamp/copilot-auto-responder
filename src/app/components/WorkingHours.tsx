@@ -61,7 +61,7 @@ const WorkingHours = ({ selectedDays }: Props) => {
                         onChange(value);
                       }}
                     />
-                  )
+                  );
                 }}
               />
             </div>
