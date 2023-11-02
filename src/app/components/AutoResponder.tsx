@@ -21,10 +21,10 @@ import {
 import Days from "./Days";
 import Fieldset from "./Fieldset";
 import SelectField from "./Select";
+import { ChevronDown } from "@/icons";
 import Typography from "./Typography";
 import WorkingHours from "./WorkingHours";
 import { SettingType } from "@prisma/client";
-import { ChevronDown } from "@/icons";
 import {
   AUTO_RESPONSE_OPTIONS,
   DAYS,
@@ -166,6 +166,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
     register,
     handleSubmit,
     watch,
+    getValues,
     setValue,
     reset,
     formState: { isDirty, errors },
@@ -222,7 +223,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
         );
       }
     }
-  }, [autoRespond, setValue]);
+  }, [autoRespond]);
 
   const toggleSelectedDay = (day: DAY_VALUE) => {
     const selectedDayIndex = selectedDays.fields.findIndex(
@@ -297,8 +298,11 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                 title="Auto responder configuration"
                 info="Set up automatic responses to incoming messages in the Messages App"
               >
-                <Typography text="Enable auto response"  variant="label"
-                            className="mb-1.5 text-text" />
+                <Typography
+                  text="Enable auto response"
+                  variant="label"
+                  className="mb-1.5 text-text"
+                />
                 <Controller
                   name="autoRespond"
                   render={({ field: { onChange, value } }) => (
@@ -318,8 +322,11 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                   info="Your automated response will send outside of these hours"
                 >
                   <div>
-                    <Typography text="Timezone"  variant="label"
-                                className="mb-1.5" />
+                    <Typography
+                      text="Timezone"
+                      variant="label"
+                      className="mb-1.5"
+                    />
                     <Controller
                       name="timezone"
                       render={({ field: { onChange, value } }) => (
@@ -348,10 +355,12 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                       )}
                     </div>
                   </div>
-                  <WorkingHours
-                    selectedDays={selectedDays.fields}
-                    errors={workingHoursErrors}
-                  />
+                  {getValues().selectedDays && (
+                    <WorkingHours
+                      selectedDays={selectedDays.fields}
+                      errors={workingHoursErrors}
+                    />
+                  )}
                 </Fieldset>
               )}
               {autoRespond !== SettingType.DISABLED && (
@@ -359,8 +368,11 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                   title="Response message"
                   info="Customize the automated response message"
                 >
-                  <Typography text="Response"   variant="label"
-                              className="mb-1.5" />
+                  <Typography
+                    text="Response"
+                    variant="label"
+                    className="mb-1.5"
+                  />
                   <div className="mb-8">
                     <textarea
                       placeholder="Your automated response"
@@ -375,8 +387,11 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                       </p>
                     )}
                   </div>
-                  <Typography text="Sent by"  variant="label"
-                              className="mb-1.5 mt-6" />
+                  <Typography
+                    text="Sent by"
+                    variant="label"
+                    className="mb-1.5 mt-6"
+                  />
                   <input
                     disabled
                     placeholder="Your name"
