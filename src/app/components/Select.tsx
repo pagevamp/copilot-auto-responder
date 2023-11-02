@@ -26,7 +26,7 @@ const SelectField = <V,>({
   return (
     <Select.Root value={value} onValueChange={onValueChange}>
       <Select.Trigger
-        className={`w-full flex items-center justify-between border border-border hover:border-border-hover rounded px-3.5 text-text text-body-md leading-none h-[38px] gap-[5px] bg-transparent text-violet11 hover:bg-mauve3 focus:shadow-[0_0_0_1px] focus:shadow-black data-[placeholder]:text-violet9 outline-none ${className}`}
+        className={`w-full flex items-center justify-between border border-border hover:border-border-hover rounded px-3.5 text-text text-body-md leading-none h-[38px] gap-[5px] bg-transparent text-violet11 hover:bg-mauve3 data-[placeholder]:text-violet9 outline-none ${className}`}
         aria-label="Food"
       >
         <Select.Value

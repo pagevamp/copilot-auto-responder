@@ -87,8 +87,8 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
     lineHeight: "1.57",
     paddingInlineStart: "0.125rem",
     paddingInlineEnd: "0.375rem",
-    borderColor: state.isFocused ? "#212B36" : "none",
-    boxShadow: state.isFocused ? "#212B36" : "none",
+    borderColor: "none",
+    boxShadow: "none",
     ":hover": {
       ...styles[":hover"],
       borderColor: state.isFocused ? "#C9CBCD" : "#C9CBCD",
@@ -341,7 +341,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                       )}
                     />
                   </div>
-                  <div className="flex items-center justify-between py-6 my-6 border-y border-gray-300">
+                  <div className="flex flex-wrap gap-y-2 items-center justify-between py-6 my-6 border-y border-gray-300">
                     <Typography text="Select days" variant="label" />
                     <div>
                       <Days
@@ -376,8 +376,8 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                   <div className="mb-8">
                     <textarea
                       placeholder="Your automated response"
-                      className={`block w-full p-3 mb-1 text-[14px] font-normal rounded-md bg-transparent border resize-none ${
-                        errors.response ? "border-red-500" : " border-gray-300"
+                      className={`block w-full p-3 mb-1 text-[14px] font-normal rounded-md bg-transparent border hover:border-border-hover focus:shadow-none focus:outline-none ${
+                        errors.response ? "border-red-500" : " border-border"
                       }`}
                       {...register("response")}
                     />
@@ -395,7 +395,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                   <input
                     disabled
                     placeholder="Your name"
-                    className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-gray-300 mb-8 disabled:text-gray-500"
+                    className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-border-disabled mb-8 disabled:text-text-disabled"
                     {...register("sender")}
                   />
                 </Fieldset>

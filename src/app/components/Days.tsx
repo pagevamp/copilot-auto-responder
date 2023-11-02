@@ -8,7 +8,7 @@ interface Props {
 
 const Days = ({ selectedDays, onDayClick }: Props) => {
   return (
-    <ul className="flex justify-between items-center gap-4">
+    <ul className="flex  flex-wrap  items-center gap-4">
       {Object.keys(DAYS).map((day: DAY_KEY | string) => {
         const isSelected = !!selectedDays.find(
           (selectedDay) => DAYS[day as DAY_KEY] === selectedDay.day
