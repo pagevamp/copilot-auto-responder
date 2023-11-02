@@ -105,6 +105,7 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
       ":hover": {
         ...styles[":hover"],
         outlineColor: "#F8F9FB",
+        background: '#F8F9FB'
       },
 
       ":focus": {
