@@ -31,8 +31,8 @@ export class MessageService {
         channelId: message.channelId,
         clientId: client.id,
         createdAt: {
-          gte: this.subtractHours(new Date(), 1)
-        }
+          gte: this.subtractHours(new Date(), 1),
+        },
       },
     });
 
@@ -65,7 +65,7 @@ export class MessageService {
     const messageData = SendMessageRequestSchema.parse({
       text: setting.message,
       senderId: setting.createdById,
-      channelId: message.channelId
+      channelId: message.channelId,
     });
 
     await Promise.all([
@@ -75,9 +75,9 @@ export class MessageService {
           message: setting.message || '',
           clientId: message.senderId,
           channelId: messageData.channelId,
-          senderId: setting.createdById
-        }
-      })
-    ])
+          senderId: setting.createdById,
+        },
+      }),
+    ]);
   }
 }

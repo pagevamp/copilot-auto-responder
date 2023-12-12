@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { DetailedHTMLProps, TextareaHTMLAttributes } from "react";
+import { DetailedHTMLProps, TextareaHTMLAttributes } from 'react';
 
 const Textarea = (
   props: DetailedHTMLProps<
     TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement
-  >
+  >,
 ) => {
   return <textarea {...props} />;
 };

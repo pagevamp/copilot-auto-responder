@@ -1,15 +1,15 @@
-import { Controller } from "react-hook-form";
+import { Controller } from 'react-hook-form';
 
-import Typography from "./Typography";
-import SelectField from "./Select";
+import Typography from './Typography';
+import SelectField from './Select';
 import {
   DAYS,
   DAY_KEY,
   HOUR,
   HOURS_SELECT_OPTIONS,
   SelectedDay,
-} from "@/constants";
-import React, { useMemo } from "react";
+} from '@/constants';
+import React, { useMemo } from 'react';
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -31,21 +31,21 @@ const WorkingHours = ({ selectedDays, errors }: Props) => {
 
       return (
         <li key={day}>
-          <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
+          <div className='flex flex-col gap-2 md:flex-row justify-between md:items-center'>
             <Typography
               text={day.toLocaleLowerCase()}
-              className="capitalize flex-1"
-              variant="label"
+              className='capitalize flex-1'
+              variant='label'
             />
-            <div className="flex justify-end md:w-[372px]">
-              <div className="w-1/2 min-w-[100px] md:max-w-[200px]">
+            <div className='flex justify-end md:w-[372px]'>
+              <div className='w-1/2 min-w-[100px] md:max-w-[200px]'>
                 <Controller
                   name={`selectedDays[${selectedDayIndex}].startHour`}
                   render={({ field: { onChange, value } }) => (
                     <SelectField<HOUR>
                       value={value}
                       options={HOURS_SELECT_OPTIONS}
-                      className="rounded-tr-none rounded-br-none border-r-0"
+                      className='rounded-tr-none rounded-br-none border-r-0'
                       onValueChange={(value: string) => {
                         onChange(value);
                       }}
@@ -53,14 +53,14 @@ const WorkingHours = ({ selectedDays, errors }: Props) => {
                   )}
                 />
               </div>
-              <div className="w-1/2 min-w-[100px] md:max-w-[200px]">
+              <div className='w-1/2 min-w-[100px] md:max-w-[200px]'>
                 <Controller
                   name={`selectedDays[${selectedDayIndex}].endHour`}
                   render={({ field: { onChange, value } }) => (
                     <SelectField<HOUR>
                       value={value}
                       options={HOURS_SELECT_OPTIONS}
-                      className="rounded-tl-none rounded-bl-none"
+                      className='rounded-tl-none rounded-bl-none'
                       onValueChange={(value: string) => {
                         onChange(value);
                       }}
@@ -71,14 +71,14 @@ const WorkingHours = ({ selectedDays, errors }: Props) => {
             </div>
           </div>
           {errors && (
-            <p className="text-right text-red-500 text-xs mt-1">{error}</p>
+            <p className='text-right text-red-500 text-xs mt-1'>{error}</p>
           )}
         </li>
       );
     });
   }, [selectedDays, errors]);
 
-  return <ul className="flex flex-col gap-6">{daysToRender}</ul>;
+  return <ul className='flex flex-col gap-6'>{daysToRender}</ul>;
 };
 
 export default React.memo(WorkingHours);

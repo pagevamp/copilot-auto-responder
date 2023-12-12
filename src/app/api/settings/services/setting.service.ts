@@ -1,10 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 import {
   SettingRequest,
   SettingResponse,
   SettingResponseSchema,
-} from "@/types/setting";
-import { getCurrentUser } from "@/utils/common";
+} from '@/types/setting';
+import { getCurrentUser } from '@/utils/common';
 import DBClient from '@/lib/db';
 
 export class SettingService {

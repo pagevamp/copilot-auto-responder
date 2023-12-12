@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "prepare": "husky install",
+    "lint:fix": "eslint --fix --color",
+    "format": "prettier --write .",
+    "lint-staged": "npx lint-staged",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -34,9 +39,18 @@
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "lint-staged": "^15.2.0",
     "postcss": "latest",
+    "prettier": "^3.1.1",
     "prisma": "^5.4.2",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "husky": "^8.0.0"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.{ts,tsx}": [
+      "eslint --fix --color",
+      "prettier --write"
+    ]
   }
 }
