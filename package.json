@@ -1,56 +1,57 @@
 {
-  "name": "custom-app-base",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "prepare": "husky install",
-    "lint:fix": "eslint --fix --color",
-    "format": "prettier --write .",
-    "lint-staged": "npx lint-staged",
-    "postinstall": "prisma generate"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^3.3.2",
-    "@js-joda/core": "^5.6.1",
-    "@js-joda/timezone": "^2.18.2",
-    "@prisma/client": "^5.4.2",
-    "@radix-ui/react-select": "^2.0.0",
-    "@vercel/postgres": "^0.5.0",
-    "next": "latest",
-    "next-plugin-svgr": "^1.1.8",
-    "prisma": "^5.4.2",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-error-boundary": "^4.0.11",
-    "react-hook-form": "^7.47.0",
-    "react-select": "^5.7.7",
-    "react-timezone-select": "^2.1.2",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "lint-staged": "^15.2.0",
-    "postcss": "latest",
-    "prettier": "^3.1.1",
-    "prisma": "^5.4.2",
-    "tailwindcss": "latest",
-    "typescript": "latest",
-    "husky": "^8.0.0"
-  },
-  "lint-staged": {
-    "{src,test}/**/*.{ts,tsx}": [
-      "eslint --fix --color",
-      "prettier --write"
-    ]
-  }
+    "name": "custom-app-base",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "vercel-build": "prisma generate && prisma migrate deploy && next build",
+        "prepare": "husky install",
+        "eslint": "eslint './src/**/*.{ts,tsx}'",
+        "lint:fix": "eslint . --fix --color",
+        "format": "prettier --write .",
+        "lint-staged": "npx lint-staged",
+        "postinstall": "prisma generate"
+    },
+    "dependencies": {
+        "@hookform/resolvers": "^3.3.2",
+        "@js-joda/core": "^5.6.1",
+        "@js-joda/timezone": "^2.18.2",
+        "@prisma/client": "^5.4.2",
+        "@radix-ui/react-select": "^2.0.0",
+        "@vercel/postgres": "^0.5.0",
+        "next": "latest",
+        "next-plugin-svgr": "^1.1.8",
+        "prisma": "^5.4.2",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-error-boundary": "^4.0.11",
+        "react-hook-form": "^7.47.0",
+        "react-select": "^5.7.7",
+        "react-timezone-select": "^2.1.2",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "autoprefixer": "latest",
+        "eslint": "latest",
+        "eslint-config-next": "latest",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0",
+        "postcss": "latest",
+        "prettier": "^3.1.1",
+        "prisma": "^5.4.2",
+        "tailwindcss": "latest",
+        "typescript": "latest"
+    },
+    "lint-staged": {
+        "src/**/*.{ts,tsx}": [
+            "npm run lint:fix",
+            "npm run format"
+        ]
+    }
 }

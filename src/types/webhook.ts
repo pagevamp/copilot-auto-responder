@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const WebhookSchema = z.object({
-  eventType: z.string(),
-  created: z.string().optional(),
-  object: z.string().optional(),
-  data: z.unknown(),
-});
+    eventType: z.string(),
+    created: z.string().optional(),
+    object: z.string().optional(),
+    data: z.unknown(),
+})
