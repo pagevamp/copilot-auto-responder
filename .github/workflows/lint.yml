@@ -18,6 +18,9 @@ jobs:
           cache: yarn
           cache:-dependency-path: './yarn.lock'
 
+      - name: Install dependencies
+        run: yarn ci
+
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
