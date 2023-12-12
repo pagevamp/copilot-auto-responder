@@ -1,5 +1,5 @@
 {
-  "name": "custom-app-base",
+  "name": "copilot-auto-responder",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,10 @@
     "vercel-build": "prisma generate && next build",
     "prepare": "husky install",
     "eslint": "eslint './src/**/*.{ts,tsx}'",
-    "lint:fix": "eslint . --fix --color",
-    "format": "prettier --write .",
+    "lint:check": "eslint \"{src,test}/**/*.{ts,tsx}\"",
+    "lint:fix": "npm run lint:check -- --fix",
+    "prettier:check": "prettier --check \"{src,test}/**/*.{ts,tsx}\"",
+    "prettier:fix": "prettier --write .",
     "lint-staged": "npx lint-staged",
     "postinstall": "prisma generate"
   },
@@ -51,7 +53,7 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "yarn lint:fix",
-      "yarn format"
+      "yarn prettier:fix"
     ]
   }
 }
