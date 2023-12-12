@@ -50,8 +50,8 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "npm run lint:fix",
-      "npm run format"
+      "yarn lint:fix",
+      "yarn format"
     ]
   }
 }
