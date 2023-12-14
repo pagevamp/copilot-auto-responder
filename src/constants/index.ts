@@ -14,7 +14,7 @@ export const AUTO_RESPONSE_OPTIONS: SelectOption<$Enums.SettingType>[] = [
   },
   { value: $Enums.SettingType.ENABLED, label: 'Always on' },
   { value: $Enums.SettingType.DISABLED, label: 'Off' },
-];
+] as const;
 
 export const DAYS = {
   SUNDAY: 7,
@@ -24,7 +24,7 @@ export const DAYS = {
   THURSDAY: 4,
   FRIDAY: 5,
   SATURDAY: 6,
-};
+} as const;
 
 export enum HOUR {
   '0:00-AM' = '00:00',
@@ -53,8 +53,8 @@ export enum HOUR {
   '11:00-PM' = '23:00',
 }
 
-export const DEFAULT_START_HOUR = HOUR['9:00-AM'];
-export const DEFAULT_END_HOUR = HOUR['5:00-PM'];
+export const DEFAULT_START_HOUR = HOUR['9:00-AM'] as const;
+export const DEFAULT_END_HOUR = HOUR['5:00-PM'] as const;
 
 export const HOURS_SELECT_OPTIONS: SelectOption<HOUR>[] = Object.entries(HOUR).map(([key, value]) => ({
   label: key.replace('-', ' '),
