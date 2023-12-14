@@ -1,15 +1,9 @@
-import { Controller } from "react-hook-form";
+import { Controller } from 'react-hook-form';
 
-import Typography from "./Typography";
-import SelectField from "./Select";
-import {
-  DAYS,
-  DAY_KEY,
-  HOUR,
-  HOURS_SELECT_OPTIONS,
-  SelectedDay,
-} from "@/constants";
-import React, { useMemo } from "react";
+import Typography from './Typography';
+import SelectField from './Select';
+import { DAYS, DAY_KEY, HOUR, HOURS_SELECT_OPTIONS, SelectedDay } from '@/constants';
+import React, { useMemo } from 'react';
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -32,11 +26,7 @@ const WorkingHours = ({ selectedDays, errors }: Props) => {
       return (
         <li key={day}>
           <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
-            <Typography
-              text={day.toLocaleLowerCase()}
-              className="capitalize flex-1"
-              variant="label"
-            />
+            <Typography text={day.toLocaleLowerCase()} className="capitalize flex-1" variant="label" />
             <div className="flex justify-end md:w-[372px]">
               <div className="w-1/2 min-w-[100px] md:max-w-[200px]">
                 <Controller
@@ -70,9 +60,7 @@ const WorkingHours = ({ selectedDays, errors }: Props) => {
               </div>
             </div>
           </div>
-          {errors && (
-            <p className="text-right text-red-500 text-xs mt-1">{error}</p>
-          )}
+          {errors && <p className="text-right text-red-500 text-xs mt-1">{error}</p>}
         </li>
       );
     });

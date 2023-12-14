@@ -1,16 +1,11 @@
-import { $Enums } from "@prisma/client";
+import { $Enums } from '@prisma/client';
 
-import { getCurrentUser } from "@/utils/common";
-import { HOUR, SettingsData } from "@/constants";
-import { SettingResponse } from "@/types/setting";
-import AutoResponder from "@/app/components/AutoResponder";
-import { SettingService } from "@/app/api/settings/services/setting.service";
-import {
-  Client,
-  Company,
-  CopilotAPI,
-  MeResponse,
-} from "@/utils/copilotApiUtils";
+import { getCurrentUser } from '@/utils/common';
+import { HOUR, SettingsData } from '@/constants';
+import { SettingResponse } from '@/types/setting';
+import AutoResponder from '@/app/components/AutoResponder';
+import { SettingService } from '@/app/api/settings/services/setting.service';
+import { Client, Company, CopilotAPI, MeResponse } from '@/utils/copilotApiUtils';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -18,7 +13,7 @@ const settingsService = new SettingService();
 
 async function getContent(searchParams: SearchParams) {
   if (!process.env.COPILOT_API_KEY) {
-    throw new Error("Missing COPILOT_API_KEY");
+    throw new Error('Missing COPILOT_API_KEY');
   }
 
   const copilotAPI = new CopilotAPI(process.env.COPILOT_API_KEY);
@@ -26,25 +21,22 @@ async function getContent(searchParams: SearchParams) {
 
   result.me = await getCurrentUser();
 
-  if (searchParams.clientId && typeof searchParams.clientId === "string") {
+  if (searchParams.clientId && typeof searchParams.clientId === 'string') {
     result.client = await copilotAPI.getClient(searchParams.clientId);
   }
 
-  if (searchParams.companyId && typeof searchParams.companyId === "string") {
+  if (searchParams.companyId && typeof searchParams.companyId === 'string') {
     result.company = await copilotAPI.getCompany(searchParams.companyId);
   }
 
   return result;
 }
 
-const populateSettingsFormData = (
-  settings: SettingResponse
-): Omit<SettingsData, "sender"> => {
+const populateSettingsFormData = (settings: SettingResponse): Omit<SettingsData, 'sender'> => {
   return {
     autoRespond: settings.type || $Enums.SettingType.DISABLED,
     response: settings.message || null,
-    timezone:
-      settings.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezone: settings.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
     selectedDays: (settings.workingHours || [])?.map((workingHour) => ({
       day: workingHour.weekday,
       startHour: workingHour.startTime as HOUR,
@@ -53,16 +45,12 @@ const populateSettingsFormData = (
   };
 };
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
+export default async function Page({ searchParams }: { searchParams: SearchParams }) {
   const { me } = await getContent(searchParams);
 
   const setting = await settingsService.findByUserId(me?.id as string);
   const saveSettings = async (data: SettingsData) => {
-    "use server";
+    'use server';
 
     const setting = {
       type: data.autoRespond,

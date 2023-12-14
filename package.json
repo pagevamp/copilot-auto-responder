@@ -1,5 +1,5 @@
 {
-  "name": "custom-app-base",
+  "name": "copilot-auto-responder",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "vercel-build": "prisma generate && next build",
+    "prepare": "husky install",
+    "eslint": "eslint './src/**/*.{ts,tsx}'",
+    "lint:check": "eslint \"{src,test}/**/*.{ts,tsx}\"",
+    "lint:fix": "npm run lint:check -- --fix",
+    "prettier:check": "prettier --check \"{src,test}/**/*.{ts,tsx}\"",
+    "prettier:fix": "prettier --write .",
+    "lint-staged": "npx lint-staged",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -34,9 +42,18 @@
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "postcss": "latest",
+    "prettier": "^3.1.1",
     "prisma": "^5.4.2",
     "tailwindcss": "latest",
     "typescript": "latest"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "yarn lint:fix",
+      "yarn prettier:fix"
+    ]
   }
 }

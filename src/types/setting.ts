@@ -1,12 +1,12 @@
-import { z } from "zod";
-import { SettingType } from "@prisma/client";
+import { z } from 'zod';
+import { SettingType } from '@prisma/client';
 
 export const WorkingHoursSchema = z.array(
   z.object({
     weekday: z.number().min(1).max(7),
     startTime: z.string(),
     endTime: z.string(),
-  })
+  }),
 );
 export type WorkingHours = z.infer<typeof WorkingHoursSchema>;
 

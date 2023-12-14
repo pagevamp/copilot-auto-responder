@@ -26,12 +26,15 @@ export async function POST(request: NextRequest) {
   }
 
   if (appConfig.webhookSigningSecret) {
-    const signature = crypto.createHmac("sha256", appConfig.webhookSigningSecret).update(rawBody).digest("hex");
+    const signature = crypto.createHmac('sha256', appConfig.webhookSigningSecret).update(rawBody).digest('hex');
 
     if (signature !== request.headers.get('x-copilot-signature')) {
-      return NextResponse.json({
-        message: 'Invalid signature'
-      }, { status: 400 })
+      return NextResponse.json(
+        {
+          message: 'Invalid signature',
+        },
+        { status: 400 },
+      );
     }
   }
 

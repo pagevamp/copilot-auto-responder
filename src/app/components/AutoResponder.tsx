@@ -1,30 +1,19 @@
-"use client";
-import { z } from "zod";
-import { useEffect, useRef, useState } from "react";
-import TimezoneSelect, { ITimezone } from "react-timezone-select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ErrorBoundary } from "react-error-boundary";
-import {
-  Controller,
-  FormProvider,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
-import {
-  StylesConfig,
-  components,
-  DropdownIndicatorProps,
-  GroupBase,
-} from "react-select";
+'use client';
+import { z } from 'zod';
+import { useEffect, useRef, useState } from 'react';
+import TimezoneSelect, { ITimezone } from 'react-timezone-select';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { StylesConfig, components, DropdownIndicatorProps, GroupBase } from 'react-select';
 
-import Days from "./Days";
-import Fieldset from "./Fieldset";
-import SelectField from "./Select";
-import { ChevronDown } from "@/icons";
-import Typography from "./Typography";
-import WorkingHours from "./WorkingHours";
-import { SettingType } from "@prisma/client";
+import Days from './Days';
+import Fieldset from './Fieldset';
+import SelectField from './Select';
+import { ChevronDown } from '@/icons';
+import Typography from './Typography';
+import WorkingHours from './WorkingHours';
+import { SettingType } from '@prisma/client';
 import {
   AUTO_RESPONSE_OPTIONS,
   DAYS,
@@ -34,7 +23,7 @@ import {
   HOUR,
   SelectedDay,
   SettingsData,
-} from "@/constants";
+} from '@/constants';
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -68,9 +57,7 @@ interface Props {
   onSave(data: SettingsData): Promise<void>;
   activeSettings: SettingsData;
 }
-const DropdownIndicator = (
-  props: DropdownIndicatorProps<ITimezone, false, GroupBase<ITimezone>>
-) => {
+const DropdownIndicator = (props: DropdownIndicatorProps<ITimezone, false, GroupBase<ITimezone>>) => {
   return (
     <components.DropdownIndicator {...props}>
       <ChevronDown />
@@ -79,53 +66,63 @@ const DropdownIndicator = (
 };
 
 const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
+  // @ts-ignore
   control: (styles, state) => ({
     ...styles,
-    backgroundColor: "white",
-    fontWeight: "400",
-    fontSize: "0.875rem",
-    lineHeight: "1.57",
-    paddingInlineStart: "0.125rem",
-    paddingInlineEnd: "0.375rem",
-    borderColor: "none",
-    boxShadow: "none",
-    ":hover": {
-      ...styles[":hover"],
-      borderColor: state.isFocused ? "#C9CBCD" : "#C9CBCD",
+    backgroundColor: 'white',
+    fontWeight: '400',
+    fontSize: '0.875rem',
+    lineHeight: '1.57',
+    paddingInlineStart: '0.125rem',
+    paddingInlineEnd: '0.375rem',
+    borderColor: 'none',
+    boxShadow: 'none',
+    ':hover': {
+      ...styles[':hover'],
+      borderColor: state.isFocused ? '#C9CBCD' : '#C9CBCD',
     },
   }),
 
-  menu: (styles) => ({ ...styles, borderColor: "#DFE1E4", overflow: "hidden" }),
+  // @ts-ignore
+  menu: (styles) => ({
+    ...styles,
+    borderColor: '#DFE1E4',
+    overflow: 'hidden',
+  }),
+  // @ts-ignore
   option: (styles, { isDisabled }) => {
     return {
       ...styles,
-      backgroundColor: "white",
-      color: "#212B36",
-      cursor: isDisabled ? "not-allowed" : "default",
-      ":hover": {
-        ...styles[":hover"],
-        outlineColor: "#F8F9FB",
-        background: '#F8F9FB'
+      backgroundColor: 'white',
+      color: '#212B36',
+      cursor: isDisabled ? 'not-allowed' : 'default',
+      ':hover': {
+        ...styles[':hover'],
+        outlineColor: '#F8F9FB',
+        background: '#F8F9FB',
       },
 
-      ":focus": {
-        ...styles[":focus"],
-        outlineColor: "black",
+      ':focus': {
+        ...styles[':focus'],
+        outlineColor: 'black',
       },
-      ":active": {
-        ...styles[":active"],
-        backgroundColor: "#F8F9FB",
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: '#F8F9FB',
       },
-      fontSize: "0.875rem",
-      lineHeight: "1.57",
-      fontWeight: "400",
+      fontSize: '0.875rem',
+      lineHeight: '1.57',
+      fontWeight: '400',
     };
   },
-  input: (styles) => ({ ...styles, margin: "0px" }),
+  // @ts-ignore
+  input: (styles) => ({ ...styles, margin: '0px' }),
   // placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
   // singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
-  clearIndicator: (styles) => ({ ...styles, display: "none" }),
-  indicatorSeparator: (styles) => ({ ...styles, display: "none" }),
+  // @ts-ignore
+  clearIndicator: (styles) => ({ ...styles, display: 'none' }),
+  // @ts-ignore
+  indicatorSeparator: (styles) => ({ ...styles, display: 'none' }),
   dropdownIndicator: (styles) => ({ ...styles }),
 };
 
@@ -138,9 +135,9 @@ const ValidationSchema = z.object({
         day: z.number(),
         startHour: z.nativeEnum(HOUR),
         endHour: z.nativeEnum(HOUR),
-      })
+      }),
     )
-    .min(1, "Select at least one day")
+    .min(1, 'Select at least one day')
     .max(7)
     .nullable(),
   response: z
@@ -154,11 +151,9 @@ const ValidationSchema = z.object({
 const AutoResponder = ({ onSave, activeSettings }: Props) => {
   const defaultFormValues = useRef(activeSettings);
   const [saving, setSaving] = useState(false);
-  const [workingHoursErrors, setWorkingHoursErrors] = useState<
-    Record<number, string>
-  >({});
+  const [workingHoursErrors, setWorkingHoursErrors] = useState<Record<number, string>>({});
   const methods = useForm<SettingsData>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: defaultFormValues.current,
     resolver: zodResolver(ValidationSchema),
   });
@@ -175,61 +170,55 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
 
   const selectedDays = useFieldArray({
     control: control,
-    name: "selectedDays",
+    name: 'selectedDays',
   });
-  const autoRespond = watch("autoRespond");
+  const autoRespond = watch('autoRespond');
 
   useEffect(() => {
     if (isDirty) {
       if (autoRespond === SettingType.DISABLED) {
-        setValue("selectedDays", null, {
+        setValue('selectedDays', null, {
           shouldValidate: true,
         });
-        setValue("timezone", null, {
+        setValue('timezone', null, {
           shouldValidate: true,
         });
-        setValue("response", null, {
+        setValue('response', null, {
           shouldValidate: true,
         });
       }
       if (autoRespond === SettingType.ENABLED) {
-        setValue("timezone", null, {
+        setValue('timezone', null, {
           shouldValidate: true,
         });
-        setValue("selectedDays", null, {
+        setValue('selectedDays', null, {
           shouldValidate: true,
         });
-        setValue(
-          "response",
-          "Thanks for your message. We'll get back to you shortly.",
-          {
-            shouldValidate: true,
-          }
-        );
+        setValue('response', "Thanks for your message. We'll get back to you shortly.", {
+          shouldValidate: true,
+        });
       }
       if (autoRespond === SettingType.OUTSIDE_WORKING_HOURS) {
-        setValue("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone, {
+        setValue('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone, {
           shouldValidate: true,
         });
-        setValue("selectedDays", defaultSelectedDays, {
+        setValue('selectedDays', defaultSelectedDays, {
           shouldValidate: true,
         });
 
         setValue(
-          "response",
+          'response',
           "Thanks for your message. You've reached us outside our working hours. We'll get back to you within 24 hours.",
           {
             shouldValidate: true,
-          }
+          },
         );
       }
     }
   }, [autoRespond]);
 
   const toggleSelectedDay = (day: DAY_VALUE) => {
-    const selectedDayIndex = selectedDays.fields.findIndex(
-      (selectedDay) => selectedDay.day === day
-    );
+    const selectedDayIndex = selectedDays.fields.findIndex((selectedDay) => selectedDay.day === day);
 
     if (selectedDayIndex >= 0) {
       selectedDays.remove(selectedDayIndex);
@@ -256,7 +245,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
       if (endHour <= startHour) {
         newErrors = {
           ...newErrors,
-          [selectedDay.day]: "End time should be after start time",
+          [selectedDay.day]: 'End time should be after start time',
         };
       } else {
         delete newErrors[selectedDay.day];
@@ -289,21 +278,14 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <FormProvider {...methods}>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="h-full flex flex-col"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
           <div className="w-full flex-1 overflow-y-scroll px-6 py-16">
             <div className="w-full max-w-[880px] mx-auto">
               <Fieldset
                 title="Auto responder configuration"
                 info="Set up automatic responses to incoming messages in the Messages App"
               >
-                <Typography
-                  text="Enable auto response"
-                  variant="label"
-                  className="mb-1.5 text-text"
-                />
+                <Typography text="Enable auto response" variant="label" className="mb-1.5 text-text" />
                 <Controller
                   name="autoRespond"
                   render={({ field: { onChange, value } }) => (
@@ -318,24 +300,21 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                 />
               </Fieldset>
               {autoRespond === SettingType.OUTSIDE_WORKING_HOURS && (
-                <Fieldset
-                  title="Working hours"
-                  info="Your automated response will send outside of these hours"
-                >
+                <Fieldset title="Working hours" info="Your automated response will send outside of these hours">
                   <div>
-                    <Typography
-                      text="Timezone"
-                      variant="label"
-                      className="mb-1.5"
-                    />
+                    <Typography text="Timezone" variant="label" className="mb-1.5" />
                     <Controller
                       name="timezone"
                       render={({ field: { onChange, value } }) => (
                         <TimezoneSelect
-                          value={value || ""}
-                          components={{ DropdownIndicator }}
+                          value={value || ''}
+                          components={{
+                            DropdownIndicator,
+                          }}
                           onChange={(selectedTimeZone) => {
-                            onChange(selectedTimeZone.value);
+                            if (typeof selectedTimeZone !== 'string') {
+                              onChange(selectedTimeZone.value);
+                            }
                           }}
                           styles={colourStyles}
                         />
@@ -345,59 +324,36 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                   <div className="flex flex-wrap gap-y-2 items-center justify-between py-6 my-6 border-y border-gray-300">
                     <Typography text="Select days" variant="label" />
                     <div>
-                      <Days
-                        selectedDays={selectedDays.fields}
-                        onDayClick={toggleSelectedDay}
-                      />
+                      <Days selectedDays={selectedDays.fields} onDayClick={toggleSelectedDay} />
                       {errors.selectedDays && (
-                        <p className="text-right text-red-500 text-xs mt-1">
-                          {errors.selectedDays.message}
-                        </p>
+                        <p className="text-right text-red-500 text-xs mt-1">{errors.selectedDays.message}</p>
                       )}
                     </div>
                   </div>
                   {getValues().selectedDays && (
-                    <WorkingHours
-                      selectedDays={selectedDays.fields}
-                      errors={workingHoursErrors}
-                    />
+                    <WorkingHours selectedDays={selectedDays.fields} errors={workingHoursErrors} />
                   )}
                 </Fieldset>
               )}
               {autoRespond !== SettingType.DISABLED && (
-                <Fieldset
-                  title="Response message"
-                  info="Customize the automated response message"
-                >
-                  <Typography
-                    text="Response"
-                    variant="label"
-                    className="mb-1.5"
-                  />
+                <Fieldset title="Response message" info="Customize the automated response message">
+                  <Typography text="Response" variant="label" className="mb-1.5" />
                   <div className="mb-8">
                     <textarea
                       placeholder="Your automated response"
                       className={`block w-full p-3 mb-1 text-[14px] font-normal rounded-md bg-transparent border hover:border-border-hover focus:shadow-none focus:outline-none ${
-                        errors.response ? "border-red-500" : " border-border"
+                        errors.response ? 'border-red-500' : ' border-border'
                       }`}
-                      {...register("response")}
+                      {...register('response')}
                     />
-                    {errors.response && (
-                      <p className="text-red-500 text-xs">
-                        {errors.response.message}
-                      </p>
-                    )}
+                    {errors.response && <p className="text-red-500 text-xs">{errors.response.message}</p>}
                   </div>
-                  <Typography
-                    text="Sent by"
-                    variant="label"
-                    className="mb-1.5 mt-6"
-                  />
+                  <Typography text="Sent by" variant="label" className="mb-1.5 mt-6" />
                   <input
                     disabled
                     placeholder="Your name"
                     className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-border-disabled mb-8 disabled:text-text-disabled"
-                    {...register("sender")}
+                    {...register('sender')}
                   />
                 </Fieldset>
               )}
@@ -416,7 +372,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                 disabled={!!Object.keys(errors).length}
                 className="h-8 py-1 px-3 bg-slate-800 rounded-md min-w-[70px] text-white hover:bg-slate-900 text-sm disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {saving ? "Saving..." : "Save changes"}
+                {saving ? 'Saving...' : 'Save changes'}
               </button>
             </div>
           )}
