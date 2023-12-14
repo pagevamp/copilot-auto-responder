@@ -66,6 +66,7 @@ const DropdownIndicator = (props: DropdownIndicatorProps<ITimezone, false, Group
 };
 
 const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
+  // @ts-ignore
   control: (styles, state) => ({
     ...styles,
     backgroundColor: 'white',
@@ -82,11 +83,13 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
     },
   }),
 
+  // @ts-ignore
   menu: (styles) => ({
     ...styles,
     borderColor: '#DFE1E4',
     overflow: 'hidden',
   }),
+  // @ts-ignore
   option: (styles, { isDisabled }) => {
     return {
       ...styles,
@@ -112,10 +115,13 @@ const colourStyles: StylesConfig<ITimezone, false, GroupBase<ITimezone>> = {
       fontWeight: '400',
     };
   },
+  // @ts-ignore
   input: (styles) => ({ ...styles, margin: '0px' }),
   // placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
   // singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
+  // @ts-ignore
   clearIndicator: (styles) => ({ ...styles, display: 'none' }),
+  // @ts-ignore
   indicatorSeparator: (styles) => ({ ...styles, display: 'none' }),
   dropdownIndicator: (styles) => ({ ...styles }),
 };
@@ -306,7 +312,9 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                             DropdownIndicator,
                           }}
                           onChange={(selectedTimeZone) => {
-                            onChange(selectedTimeZone.value);
+                            if (typeof selectedTimeZone !== 'string') {
+                              onChange(selectedTimeZone.value);
+                            }
                           }}
                           styles={colourStyles}
                         />
