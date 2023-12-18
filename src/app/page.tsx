@@ -35,10 +35,10 @@ async function getContent(searchParams: SearchParams) {
 
 const populateSettingsFormData = (settings: SettingResponse): Omit<SettingsData, 'sender'> => {
   return {
-    autoRespond: settings.type || $Enums.SettingType.DISABLED,
-    response: settings.message || null,
-    timezone: settings.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-    selectedDays: (settings.workingHours || [])?.map((workingHour) => ({
+    autoRespond: settings?.type || $Enums.SettingType.DISABLED,
+    response: settings?.message || null,
+    timezone: settings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    selectedDays: (settings?.workingHours || [])?.map((workingHour) => ({
       day: workingHour.weekday,
       startHour: workingHour.startTime as HOUR,
       endHour: workingHour.endTime as HOUR,
