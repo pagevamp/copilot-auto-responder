@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const MessageSchema = z.object({
   id: z.string(),
-  object: z.literal('message'),
+  object: z.string(),
   senderId: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -25,4 +25,4 @@ export const SendMessageErrorResponseSchema = z.object({
   message: z.string(),
   error: z.object({}),
 });
-export type SendMessageErrorResponse = z.infer<typeof SendMessageRequestSchema>;
+export type SendMessageErrorResponse = z.infer<typeof SendMessageErrorResponseSchema>;

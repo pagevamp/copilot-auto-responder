@@ -1,25 +1,26 @@
 import { $Enums } from '@prisma/client';
 
-import { getCurrentUser } from '@/utils/common';
 import { HOUR, SettingsData } from '@/constants';
 import { SettingResponse } from '@/types/setting';
 import AutoResponder from '@/app/components/AutoResponder';
 import { SettingService } from '@/app/api/settings/services/setting.service';
-import { Client, Company, CopilotAPI, MeResponse } from '@/utils/copilotApiUtils';
+import { Company, CopilotAPI } from '@/utils/copilotApiUtils';
+import { ClientResponse, MeResponse } from '@/types/common';
+import { z } from 'zod';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
 const settingsService = new SettingService();
 
 async function getContent(searchParams: SearchParams) {
-  if (!process.env.COPILOT_API_KEY) {
-    throw new Error('Missing COPILOT_API_KEY');
+  if (!searchParams.token) {
+    throw new Error('Missing token');
   }
 
-  const copilotAPI = new CopilotAPI(process.env.COPILOT_API_KEY);
-  const result: { client?: Client; company?: Company; me?: MeResponse } = {};
+  const copilotAPI = new CopilotAPI(z.string().parse(searchParams.token));
+  const result: { client?: ClientResponse; company?: Company; me?: MeResponse } = {};
 
-  result.me = await getCurrentUser();
+  result.me = await copilotAPI.me();
 
   if (searchParams.clientId && typeof searchParams.clientId === 'string') {
     result.client = await copilotAPI.getClient(searchParams.clientId);

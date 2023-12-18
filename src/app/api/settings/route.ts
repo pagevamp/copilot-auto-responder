@@ -6,7 +6,7 @@ import { SettingService } from '@/app/api/settings/services/setting.service';
 
 export async function GET() {
   const settingService = new SettingService();
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser('some-api-token'); //@todo replace token
   const setting = await settingService.findByUserId(currentUser.id);
 
   return NextResponse.json(setting ? { data: setting } : { data: null });

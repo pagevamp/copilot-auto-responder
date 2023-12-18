@@ -1,25 +1,16 @@
+import { copilotApi } from 'copilot-node-sdk';
+
 import { Message, SendMessageErrorResponse, SendMessageRequest } from '@/types/message';
-
-const BaseApiURL = 'https://api-beta.copilot.com/v1';
-
-export type MeResponse = {
-  id: string;
-  givenName: string;
-  familyName: string;
-  email: string;
-  portalName: string;
-};
-
-type ClientCustomField = string | string[];
-
-export type Client = {
-  id: string;
-  givenName: string;
-  familyName: string;
-  email: string;
-  companyId: string;
-  customFields: Record<string, ClientCustomField>;
-};
+import appConfig from '@/config/app';
+import { DefaultService as Copilot } from 'copilot-node-sdk/codegen/api/services/DefaultService';
+import {
+  ClientResponse,
+  ClientResponseSchema,
+  CompanyResponse,
+  CompanyResponseSchema,
+  MeResponse,
+  MeResponseSchema,
+} from '@/types/common';
 
 export type Company = {
   id: string;
@@ -27,47 +18,29 @@ export type Company = {
   iconImageUrl: string;
 };
 
-enum Method {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-}
-
 export class CopilotAPI {
-  apiKey: string;
+  copilot: typeof Copilot;
 
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
-  async sendApiData<T>(path: string, method: Method = Method.GET, payload?: unknown): Promise<T> {
-    const response = await fetch(`${BaseApiURL}/${path}`, {
-      headers: {
-        'x-api-key': this.apiKey,
-      },
-      method: method,
-      body: payload ? JSON.stringify(payload) : undefined,
+  constructor(apiToken: string) {
+    this.copilot = copilotApi({
+      apiKey: appConfig.copilotApiKey,
+      token: apiToken,
     });
-
-    const data = await response.json();
-    return data;
   }
 
-  async me() {
-    return this.sendApiData<MeResponse>('me');
+  async me(): Promise<MeResponse> {
+    return MeResponseSchema.parse(await this.copilot.getUserAndPortalInfo());
   }
 
-  async getClient(clientId: string) {
-    return this.sendApiData<Client>(`clients/${clientId}`);
+  async getClient(clientId: string): Promise<ClientResponse> {
+    return ClientResponseSchema.parse(await this.copilot.retrieveAClient({ id: clientId }));
   }
 
-  async getCompany(companyId: string) {
-    return this.sendApiData<Company>(`companies/${companyId}`);
+  async getCompany(companyId: string): Promise<CompanyResponse> {
+    return CompanyResponseSchema.parse(await this.copilot.retrieveACompany({ id: companyId }));
   }
 
-  async sendMessage(payload: SendMessageRequest): Promise<Message | SendMessageErrorResponse> {
-    return this.sendApiData<Message | SendMessageErrorResponse>(`messages`, Method.POST, payload);
+  async sendMessage(payload: SendMessageRequest): Promise<Partial<Message> | SendMessageErrorResponse> {
+    return this.copilot.sendAMessage({ requestBody: payload });
   }
 }
