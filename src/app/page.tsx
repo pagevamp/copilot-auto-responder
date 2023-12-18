@@ -4,8 +4,8 @@ import { HOUR, SettingsData } from '@/constants';
 import { SettingResponse } from '@/types/setting';
 import AutoResponder from '@/app/components/AutoResponder';
 import { SettingService } from '@/app/api/settings/services/setting.service';
-import { Company, CopilotAPI } from '@/utils/copilotApiUtils';
-import { ClientResponse, MeResponse } from '@/types/common';
+import { CopilotAPI } from '@/utils/copilotApiUtils';
+import { ClientResponse, CompanyResponse, MeResponse } from '@/types/common';
 import { z } from 'zod';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
@@ -18,7 +18,7 @@ async function getContent(searchParams: SearchParams) {
   }
 
   const copilotAPI = new CopilotAPI(z.string().parse(searchParams.token));
-  const result: { client?: ClientResponse; company?: Company; me?: MeResponse } = {};
+  const result: { client?: ClientResponse; company?: CompanyResponse; me?: MeResponse } = {};
 
   result.me = await copilotAPI.me();
 

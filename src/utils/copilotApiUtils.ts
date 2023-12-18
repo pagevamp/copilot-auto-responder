@@ -12,12 +12,6 @@ import {
   MeResponseSchema,
 } from '@/types/common';
 
-export type Company = {
-  id: string;
-  name: string;
-  iconImageUrl: string;
-};
-
 export class CopilotAPI {
   copilot: typeof Copilot;
 
