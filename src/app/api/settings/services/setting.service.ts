@@ -20,8 +20,8 @@ export class SettingService {
     return SettingResponseSchema.parse(setting);
   }
 
-  async save(requestData: SettingRequest): Promise<void> {
-    const currentUser = await getCurrentUser('some-api-token');
+  async save(requestData: SettingRequest, { apiToken }: { apiToken: string }): Promise<void> {
+    const currentUser = await getCurrentUser(apiToken);
 
     const settingByUser = await this.prismaClient.setting.findFirst({
       where: {

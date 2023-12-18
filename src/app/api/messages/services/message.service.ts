@@ -10,9 +10,9 @@ import { z } from 'zod';
 export class MessageService {
   private prismaClient: PrismaClient = DBClient.getInstance();
 
-  async handleSendMessageWebhook(message: Message) {
+  async handleSendMessageWebhook(message: Message, { apiToken }: { apiToken: string }) {
     const settingService = new SettingService();
-    const copilotClient = new CopilotAPI('token-from-payload'); // @todo replace token
+    const copilotClient = new CopilotAPI(apiToken);
     const currentUser = await copilotClient.me();
     const setting = await settingService.findByUserId(currentUser.id);
     if (setting?.type === SettingType.DISABLED) {

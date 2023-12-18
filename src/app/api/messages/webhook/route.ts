@@ -39,7 +39,9 @@ export async function POST(request: NextRequest) {
   }
 
   const messageService = new MessageService();
-  await messageService.handleSendMessageWebhook(payload.data);
+  await messageService.handleSendMessageWebhook(payload.data, {
+    apiToken: data.token,
+  });
 
   return NextResponse.json({});
 }

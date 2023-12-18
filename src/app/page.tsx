@@ -65,7 +65,9 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
           }))
         : data.selectedDays,
     };
-    await settingsService.save(setting);
+    await settingsService.save(setting, {
+      apiToken: z.string().parse(searchParams.token),
+    });
   };
 
   return (
