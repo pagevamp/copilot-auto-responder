@@ -215,7 +215,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
         );
       }
     }
-  }, [autoRespond]);
+  }, [autoRespond, isDirty, setValue]);
 
   const toggleSelectedDay = (day: DAY_VALUE) => {
     const selectedDayIndex = selectedDays.fields.findIndex((selectedDay) => selectedDay.day === day);

@@ -4,6 +4,7 @@ import Typography from './Typography';
 import SelectField from './Select';
 import { DAYS, DAY_KEY, HOUR, HOURS_SELECT_OPTIONS, SelectedDay } from '@/constants';
 import React, { useMemo } from 'react';
+import { keys } from '@/utils/common';
 
 interface Props {
   selectedDays: SelectedDay[];
@@ -12,16 +13,16 @@ interface Props {
 
 const WorkingHours = ({ selectedDays, errors }: Props) => {
   const daysToRender = useMemo(() => {
-    return Object.keys(DAYS).map((day: DAY_KEY | string) => {
+    return keys(DAYS).map((day) => {
       const selectedDayIndex = selectedDays.findIndex((selectedDay) => {
-        return selectedDay.day === DAYS[day as DAY_KEY];
+        return selectedDay.day === DAYS[day];
       });
 
       if (selectedDayIndex < 0) {
         return null;
       }
 
-      const error = errors[DAYS[day as DAY_KEY]];
+      const error = errors[DAYS[day]];
 
       return (
         <li key={day}>

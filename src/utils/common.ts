@@ -34,3 +34,11 @@ export function isWithinWorkingHours(timezone: string, workingHours: WorkingHour
     currentTime.isAfter(LocalTime.parse(workingDay.startTime)) && currentTime.isBefore(LocalTime.parse(workingDay.endTime))
   );
 }
+
+export function keys<T extends Record<string, unknown>>(obj: T): (keyof T)[] {
+  const result: (keyof T)[] = [];
+  for (const key in obj) {
+    result.push(key);
+  }
+  return result;
+}
