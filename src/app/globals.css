@@ -5,7 +5,7 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Inter', 'Helvetica', 'Arial', san-serif;
+  font-family: 'Inter', 'Helvetica', 'Arial', sans-serif, serif;
 }
 
 :root {

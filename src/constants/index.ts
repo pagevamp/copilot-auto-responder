@@ -24,7 +24,7 @@ export const DAYS = {
   THURSDAY: 4,
   FRIDAY: 5,
   SATURDAY: 6,
-};
+} as const;
 
 export enum HOUR {
   '0:00-AM' = '00:00',
