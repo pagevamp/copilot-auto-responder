@@ -51,9 +51,6 @@
     "tailwindcss": "latest",
     "typescript": "latest"
   },
-  "peerDependencies": {
-    "next": "*"
-  },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "yarn lint:fix",
