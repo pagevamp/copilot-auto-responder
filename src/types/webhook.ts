@@ -5,4 +5,5 @@ export const WebhookSchema = z.object({
   created: z.string().optional(),
   object: z.string().optional(),
   data: z.unknown(),
+  token: z.string(),
 });

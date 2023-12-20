@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { CopilotAPI, MeResponse } from '@/utils/copilotApiUtils';
+import { CopilotAPI } from '@/utils/copilotApiUtils';
 import { WorkingHours } from '@/types/setting';
 import { DayOfWeek, LocalTime, ZonedDateTime, ZoneId } from '@js-joda/core';
 import '@js-joda/timezone';
+import { MeResponse } from '@/types/common';
 
 export function errorHandler(message: string, status: number = 200) {
   return NextResponse.json(
@@ -13,12 +14,8 @@ export function errorHandler(message: string, status: number = 200) {
   );
 }
 
-export async function getCurrentUser(): Promise<MeResponse> {
-  if (!process.env.COPILOT_API_KEY) {
-    throw new Error('Copilot API key is not set.');
-  }
-
-  const copilotClient = new CopilotAPI(process.env.COPILOT_API_KEY);
+export async function getCurrentUser(apiToken: string): Promise<MeResponse> {
+  const copilotClient = new CopilotAPI(apiToken);
   return await copilotClient.me();
 }
 
