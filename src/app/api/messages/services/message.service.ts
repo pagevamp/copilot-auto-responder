@@ -22,10 +22,6 @@ export class MessageService {
     try {
       const client = await copilotClient.getClient(message.senderId);
 
-      if ('code' in client && client.code === 'parameter_invalid') {
-        return;
-      }
-
       const clientMessageCount = await this.prismaClient.message.count({
         where: {
           channelId: message.channelId,
@@ -54,13 +50,9 @@ export class MessageService {
         await this.sendMessage(copilotClient, setting, message);
       }
     } catch (e: unknown) {
-      const error = new Error(JSON.stringify(e));
-      console.log(e && e.body.message);
-      if (e && 'body' in e) {
-        console.log(error.body);
-      }
+      console.error(e);
 
-      throw e;
+      return;
     }
   }
 
