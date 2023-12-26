@@ -19,38 +19,48 @@ export class MessageService {
       return;
     }
 
-    const client = await copilotClient.getClient(message.senderId);
+    try {
+      const client = await copilotClient.getClient(message.senderId);
 
-    if ('code' in client && client.code === 'parameter_invalid') {
-      return;
-    }
+      if ('code' in client && client.code === 'parameter_invalid') {
+        return;
+      }
 
-    const clientMessageCount = await this.prismaClient.message.count({
-      where: {
-        channelId: message.channelId,
-        clientId: client.id,
-        createdAt: {
-          gte: this.subtractHours(new Date(), 1),
+      const clientMessageCount = await this.prismaClient.message.count({
+        where: {
+          channelId: message.channelId,
+          clientId: client.id,
+          createdAt: {
+            gte: this.subtractHours(new Date(), 1),
+          },
         },
-      },
-    });
+      });
 
-    if (clientMessageCount > 0) {
-      return;
-    }
+      if (clientMessageCount > 0) {
+        return;
+      }
 
-    if (setting?.type === SettingType.ENABLED) {
-      await this.sendMessage(copilotClient, setting, message);
+      if (setting?.type === SettingType.ENABLED) {
+        await this.sendMessage(copilotClient, setting, message);
 
-      return;
-    }
+        return;
+      }
 
-    if (!setting?.timezone || !setting?.workingHours) {
-      return;
-    }
+      if (!setting?.timezone || !setting?.workingHours) {
+        return;
+      }
 
-    if (!isWithinWorkingHours(setting.timezone, setting.workingHours)) {
-      await this.sendMessage(copilotClient, setting, message);
+      if (!isWithinWorkingHours(setting.timezone, setting.workingHours)) {
+        await this.sendMessage(copilotClient, setting, message);
+      }
+    } catch (e: unknown) {
+      const error = new Error(JSON.stringify(e));
+      console.log(e && e.body.message);
+      if (e && 'body' in e) {
+        console.log(error.body);
+      }
+
+      throw e;
     }
   }
 
