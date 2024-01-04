@@ -14,7 +14,11 @@ const settingsService = new SettingService();
 
 async function getContent(searchParams: SearchParams) {
   if (!searchParams.token) {
-    throw new Error('Missing token');
+    return {
+      client: undefined,
+      company: undefined,
+      me: undefined,
+    }
   }
 
   const copilotAPI = new CopilotAPI(z.string().parse(searchParams.token));
