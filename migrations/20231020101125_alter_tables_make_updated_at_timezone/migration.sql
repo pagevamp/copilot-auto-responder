@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Message" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ;
-
--- AlterTable
-ALTER TABLE "Setting" ALTER COLUMN "updatedAt" SET DATA TYPE TIMESTAMPTZ;
