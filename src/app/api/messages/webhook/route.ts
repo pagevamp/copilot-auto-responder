@@ -7,6 +7,17 @@ import { WebhookSchema } from '@/types/webhook';
 
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
+  const searchParams = new URL(request.url).searchParams;
+
+  const apiToken = searchParams.get('token');
+  if (!apiToken) {
+    return NextResponse.json(
+      {
+        message: 'Invalid token',
+      },
+      { status: 400 },
+    );
+  }
 
   const body = JSON.parse(rawBody);
   const result = WebhookSchema.safeParse(body);
@@ -40,7 +51,7 @@ export async function POST(request: NextRequest) {
 
   const messageService = new MessageService();
   await messageService.handleSendMessageWebhook(payload.data, {
-    apiToken: data.token,
+    apiToken,
   });
 
   return NextResponse.json({});
