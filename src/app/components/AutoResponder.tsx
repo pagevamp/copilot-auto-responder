@@ -183,18 +183,12 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
         setValue('timezone', null, {
           shouldValidate: true,
         });
-        setValue('response', null, {
-          shouldValidate: true,
-        });
       }
       if (autoRespond === SettingType.ENABLED) {
         setValue('timezone', null, {
           shouldValidate: true,
         });
         setValue('selectedDays', null, {
-          shouldValidate: true,
-        });
-        setValue('response', "Thanks for your message. We'll get back to you shortly.", {
           shouldValidate: true,
         });
       }
@@ -205,14 +199,6 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
         setValue('selectedDays', defaultSelectedDays, {
           shouldValidate: true,
         });
-
-        setValue(
-          'response',
-          "Thanks for your message. You've reached us outside our working hours. We'll get back to you within 24 hours.",
-          {
-            shouldValidate: true,
-          },
-        );
       }
     }
   }, [autoRespond]);
@@ -265,7 +251,7 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
     setSaving(true);
     await onSave(data);
     setSaving(false);
-    reset({}, { keepValues: true });
+    reset(data);
     setWorkingHoursErrors({});
     defaultFormValues.current = data;
   };
