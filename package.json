@@ -25,7 +25,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@vercel/postgres": "^0.5.0",
     "copilot-node-sdk": "^0.0.45",
-    "next": "latest",
+    "next": "^14.0.4",
     "next-plugin-svgr": "^1.1.8",
     "prisma": "^5.4.2",
     "react": "latest",

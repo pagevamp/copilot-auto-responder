@@ -52,7 +52,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
   const setting = await settingsService.findByUserId(me?.id as string);
   const saveSettings = async (data: SettingsData) => {
     'use server';
-
     const setting = {
       type: data.autoRespond,
       message: data.response,
