@@ -40,6 +40,9 @@ export const InternalUsersResponseSchema = z.object({
   data: z.array(InternalUserSchema).nullable(),
 });
 
+export type InternalUser = z.infer<typeof InternalUserSchema>;
+export type InternalUsers = z.infer<typeof InternalUsersResponseSchema>;
+
 export const CompanyResponseSchema = z.object({
   id: z.string(),
   name: z.string(),

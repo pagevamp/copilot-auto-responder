@@ -75,5 +75,5 @@ export interface SettingsData {
   timezone: string | null;
   selectedDays: SelectedDay[] | null;
   response: string | null;
-  sender: string | null;
+  senderId: string | null;
 }
