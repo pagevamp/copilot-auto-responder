@@ -17,7 +17,28 @@ export const ClientResponseSchema = z.object({
   companyId: z.string(),
   customFields: z.record(z.string(), z.union([z.string(), z.array(z.string())])).nullable(),
 });
+
 export type ClientResponse = z.infer<typeof ClientResponseSchema>;
+
+export const ClientsResponseSchema = z.object({
+  data: z.array(ClientResponseSchema).nullable(),
+});
+
+export const InternalUserSchema = z.object({
+  id: z.string(),
+  object: z.string(),
+  createdAt: z.string(),
+  givenName: z.string(),
+  familyName: z.string(),
+  email: z.string(),
+  role: z.string(),
+  isClientAccessLimited: z.boolean(),
+  companyAccessList: z.array(z.string()).nullable(),
+});
+
+export const InternalUsersResponseSchema = z.object({
+  data: z.array(InternalUserSchema).nullable(),
+});
 
 export const CompanyResponseSchema = z.object({
   id: z.string(),
