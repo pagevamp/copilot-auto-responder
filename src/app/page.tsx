@@ -5,7 +5,7 @@ import { SettingResponse } from '@/types/setting';
 import AutoResponder from '@/app/components/AutoResponder';
 import { SettingService } from '@/app/api/settings/services/setting.service';
 import { CopilotAPI } from '@/utils/copilotApiUtils';
-import { ClientResponse, CompanyResponse, MeResponse, InternalUsers } from '@/types/common';
+import { ClientResponse, CompanyResponse, MeResponse, InternalUsers, InternalUser } from '@/types/common';
 import { z } from 'zod';
 import appConfig from '@/config/app';
 
@@ -60,6 +60,12 @@ async function getInternalUsers(token: string): Promise<InternalUsers> {
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
   const { me } = await getContent(searchParams);
   const internalUsers = await getInternalUsers(searchParams.token as string);
+  //remove isClientAccessLimited=true
+  let internalUsersWithClientAccessLimitedFalse: InternalUsers = { data: [] };
+  if (internalUsers.data) {
+    let _internalUsers = internalUsers.data.filter((user: InternalUser) => user.isClientAccessLimited !== true);
+    internalUsersWithClientAccessLimitedFalse = { data: _internalUsers };
+  }
 
   const setting = await settingsService.findByUserId(me?.id as string);
   const saveSettings = async (data: SettingsData) => {
@@ -89,7 +95,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
         activeSettings={{
           ...populateSettingsFormData(setting as SettingResponse),
         }}
-        internalUsers={internalUsers}
+        internalUsers={internalUsersWithClientAccessLimitedFalse}
       />
     </main>
   );
