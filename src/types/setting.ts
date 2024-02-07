@@ -15,7 +15,7 @@ export const SettingRequestSchema = z.object({
   timezone: z.string().nullable(),
   workingHours: WorkingHoursSchema.nullable(),
   message: z.string().nullable(),
-  senderId: z.string().uuid().nullable(),
+  senderId: z.string().uuid(),
 });
 export type SettingRequest = z.infer<typeof SettingRequestSchema>;
 
@@ -26,6 +26,6 @@ export const SettingResponseSchema = z.object({
   workingHours: WorkingHoursSchema.nullable(),
   createdById: z.string().uuid(),
   message: z.string().nullable(),
-  senderId: z.string().uuid().nullable(),
+  senderId: z.string().uuid(),
 });
 export type SettingResponse = z.infer<typeof SettingResponseSchema>;
