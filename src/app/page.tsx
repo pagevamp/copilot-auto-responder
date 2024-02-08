@@ -60,7 +60,7 @@ async function getInternalUsers(token: string): Promise<InternalUsers> {
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
   const { me } = await getContent(searchParams);
   const internalUsers = await getInternalUsers(searchParams.token as string);
-  //remove isClientAccessLimited=true
+
   let internalUsersWithClientAccessLimitedFalse: InternalUsers = { data: [] };
   if (internalUsers.data) {
     let _internalUsers = internalUsers.data.filter((user: InternalUser) => user.isClientAccessLimited !== true);
