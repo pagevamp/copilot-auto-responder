@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(clients);
   } catch (error) {
+    console.error('getInternalUsers', error);
     return errorHandler('Clients not found.', 404);
   }
 }
