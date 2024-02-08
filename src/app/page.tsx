@@ -5,8 +5,9 @@ import { SettingResponse } from '@/types/setting';
 import AutoResponder from '@/app/components/AutoResponder';
 import { SettingService } from '@/app/api/settings/services/setting.service';
 import { CopilotAPI } from '@/utils/copilotApiUtils';
-import { ClientResponse, CompanyResponse, MeResponse } from '@/types/common';
+import { ClientResponse, CompanyResponse, MeResponse, InternalUsers, InternalUser } from '@/types/common';
 import { z } from 'zod';
+import appConfig from '@/config/app';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -18,7 +19,7 @@ async function getContent(searchParams: SearchParams) {
       client: undefined,
       company: undefined,
       me: undefined,
-    }
+    };
   }
 
   const copilotAPI = new CopilotAPI(z.string().parse(searchParams.token));
@@ -37,7 +38,7 @@ async function getContent(searchParams: SearchParams) {
   return result;
 }
 
-const populateSettingsFormData = (settings: SettingResponse): Omit<SettingsData, 'sender'> => {
+const populateSettingsFormData = (settings: SettingResponse): SettingsData => {
   return {
     autoRespond: settings?.type || $Enums.SettingType.DISABLED,
     response: settings?.message || null,
@@ -47,11 +48,24 @@ const populateSettingsFormData = (settings: SettingResponse): Omit<SettingsData,
       startHour: workingHour.startTime as HOUR,
       endHour: workingHour.endTime as HOUR,
     })),
+    senderId: settings.senderId,
   };
 };
 
+async function getInternalUsers(token: string): Promise<InternalUsers> {
+  const res = await fetch(`${appConfig.apiUrl}/api/internal-users?token=${token}`);
+  return await res.json();
+}
+
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
   const { me } = await getContent(searchParams);
+  const internalUsers = await getInternalUsers(searchParams.token as string);
+
+  let internalUsersWithClientAccessLimitedFalse: InternalUsers = { data: [] };
+  if (internalUsers.data) {
+    let _internalUsers = internalUsers.data.filter((user: InternalUser) => user.isClientAccessLimited !== true);
+    internalUsersWithClientAccessLimitedFalse = { data: _internalUsers };
+  }
 
   const setting = await settingsService.findByUserId(me?.id as string);
   const saveSettings = async (data: SettingsData) => {
@@ -67,6 +81,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
             endTime: selectedDay.endHour,
           }))
         : data.selectedDays,
+      senderId: data.senderId,
     };
     await settingsService.save(setting, {
       apiToken: z.string().parse(searchParams.token),
@@ -79,8 +94,8 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
         onSave={saveSettings}
         activeSettings={{
           ...populateSettingsFormData(setting as SettingResponse),
-          sender: `${me?.givenName} ${me?.familyName}`,
         }}
+        internalUsers={internalUsersWithClientAccessLimitedFalse}
       />
     </main>
   );
