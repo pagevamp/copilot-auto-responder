@@ -25,7 +25,7 @@ export class CopilotAPI {
   }
 
   async me(): Promise<MeResponse> {
-    return MeResponseSchema.parse(await this.copilot.getUserAndPortalInfo());
+    return MeResponseSchema.parse(await this.copilot.getUserInfo());
   }
 
   async getClient(clientId: string): Promise<ClientResponse> {
