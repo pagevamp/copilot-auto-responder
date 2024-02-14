@@ -65,7 +65,7 @@ export class MessageService {
   async sendMessage(copilotClient: CopilotAPI, setting: SettingResponse, message: Message): Promise<void> {
     const messageData = SendMessageRequestSchema.parse({
       text: setting.message,
-      senderId: setting.createdById,
+      senderId: setting.senderId,
       channelId: message.channelId,
     });
 
@@ -76,7 +76,7 @@ export class MessageService {
           message: z.string().parse(setting.message),
           clientId: message.senderId,
           channelId: messageData.channelId,
-          senderId: setting.createdById,
+          senderId: setting.senderId,
         },
       }),
     ]);

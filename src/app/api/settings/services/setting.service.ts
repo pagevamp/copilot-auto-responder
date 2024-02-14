@@ -22,6 +22,7 @@ export class SettingService {
 
   async save(requestData: SettingRequest, { apiToken }: { apiToken: string }): Promise<void> {
     const currentUser = await getCurrentUser(apiToken);
+    console.log(requestData);
 
     const settingByUser = await this.prismaClient.setting.findFirst({
       where: {
@@ -38,6 +39,7 @@ export class SettingService {
           workingHours: requestData.workingHours,
           message: requestData.message,
           createdById: currentUser.id,
+          senderId: requestData.senderId,
         },
       });
 
@@ -54,6 +56,7 @@ export class SettingService {
         // @ts-ignore
         workingHours: requestData.workingHours,
         message: requestData.message,
+        senderId: requestData.senderId,
       },
     });
   }

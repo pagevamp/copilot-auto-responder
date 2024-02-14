@@ -6,8 +6,10 @@ import { DefaultService as Copilot } from 'copilot-node-sdk/codegen/api/services
 import {
   ClientResponse,
   ClientResponseSchema,
+  ClientsResponseSchema,
   CompanyResponse,
   CompanyResponseSchema,
+  InternalUsersResponseSchema,
   MeResponse,
   MeResponseSchema,
 } from '@/types/common';
@@ -23,11 +25,15 @@ export class CopilotAPI {
   }
 
   async me(): Promise<MeResponse> {
-    return MeResponseSchema.parse(await this.copilot.getUserAndPortalInfo());
+    return MeResponseSchema.parse(await this.copilot.getUserInfo());
   }
 
   async getClient(clientId: string): Promise<ClientResponse> {
     return ClientResponseSchema.parse(await this.copilot.retrieveAClient({ id: clientId }));
+  }
+
+  async getInternalUsers() {
+    return InternalUsersResponseSchema.parse(await this.copilot.listInternalUsers({}));
   }
 
   async getCompany(companyId: string): Promise<CompanyResponse> {
