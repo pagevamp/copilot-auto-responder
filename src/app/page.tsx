@@ -48,7 +48,7 @@ const populateSettingsFormData = (settings: SettingResponse): SettingsData => {
       startHour: workingHour.startTime as HOUR,
       endHour: workingHour.endTime as HOUR,
     })),
-    senderId: settings.senderId,
+    senderId: settings?.senderId,
   };
 };
 
