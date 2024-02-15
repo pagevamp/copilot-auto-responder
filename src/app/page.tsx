@@ -38,7 +38,7 @@ async function getContent(searchParams: SearchParams) {
   return result;
 }
 
-const populateSettingsFormData = (settings: SettingResponse): SettingsData => {
+const populateSettingsFormData = (settings: SettingResponse, me?: MeResponse): SettingsData => {
   return {
     autoRespond: settings?.type || $Enums.SettingType.DISABLED,
     response: settings?.message || null,
@@ -48,7 +48,8 @@ const populateSettingsFormData = (settings: SettingResponse): SettingsData => {
       startHour: workingHour.startTime as HOUR,
       endHour: workingHour.endTime as HOUR,
     })),
-    senderId: settings?.senderId,
+    // If no senderId in settings (like in new workspace), default to current user
+    senderId: settings?.senderId || me?.id || '',
   };
 };
 
@@ -93,7 +94,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       <AutoResponder
         onSave={saveSettings}
         activeSettings={{
-          ...populateSettingsFormData(setting as SettingResponse),
+          ...populateSettingsFormData(setting as SettingResponse, me),
         }}
         internalUsers={internalUsersWithClientAccessLimitedFalse}
       />
