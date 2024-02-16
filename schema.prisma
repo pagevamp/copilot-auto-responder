@@ -21,7 +21,7 @@ model Setting {
   workingHours Json?       @db.JsonB
   createdById  String      @db.Uuid
   senderId     String      @db.Uuid
-  workspaceId  String      @db.Uuid
+  workspaceId  String
   message      String?
   createdAt    DateTime    @default(now()) @db.Timestamptz()
   updatedAt    DateTime    @updatedAt @ignore @db.Timestamptz()
