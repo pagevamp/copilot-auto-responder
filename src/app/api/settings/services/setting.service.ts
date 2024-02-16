@@ -1,16 +1,26 @@
 import { PrismaClient } from '@prisma/client';
-import { SettingRequest, SettingResponse, SettingResponseSchema } from '@/types/setting';
-import { getCurrentUser } from '@/utils/common';
+import { SettingRequest, SettingRequestSchema, SettingResponse, SettingResponseSchema } from '@/types/setting';
+import { getCurrentUser, getWorkspace } from '@/utils/common';
 import DBClient from '@/lib/db';
 
 export class SettingService {
   private prismaClient: PrismaClient = DBClient.getInstance();
 
+  async findByWorkspaceId(workspaceId: string): Promise<SettingResponse | null> {
+    const setting = await this.prismaClient.setting.findFirst({
+      where: { workspaceId },
+    });
+
+    if (!setting) {
+      return null;
+    }
+
+    return SettingResponseSchema.parse(setting);
+  }
+
   async findByUserId(createdById: string): Promise<SettingResponse | null> {
     const setting = await this.prismaClient.setting.findFirst({
-      where: {
-        createdById: createdById,
-      },
+      where: { createdById },
     });
 
     if (!setting) {
@@ -22,7 +32,7 @@ export class SettingService {
 
   async save(requestData: SettingRequest, { apiToken }: { apiToken: string }): Promise<void> {
     const currentUser = await getCurrentUser(apiToken);
-    console.log(requestData);
+    const currentWorkspace = await getWorkspace(apiToken);
 
     const settingByUser = await this.prismaClient.setting.findFirst({
       where: {
@@ -40,6 +50,7 @@ export class SettingService {
           message: requestData.message,
           createdById: currentUser.id,
           senderId: requestData.senderId,
+          workspaceId: currentWorkspace?.id,
         },
       });
 

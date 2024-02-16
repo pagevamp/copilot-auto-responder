@@ -9,6 +9,27 @@ export const MeResponseSchema = z.object({
 });
 export type MeResponse = z.infer<typeof MeResponseSchema>;
 
+// Response schema for `/workspace` endpoint
+export const WorkspaceResponseSchema = z.object({
+  id: z.string(),
+  industry: z.string(),
+  isCompaniesEnabled: z.boolean(),
+  isClientDirectSignUpEnabled: z.boolean(),
+  logOutUrl: z.string(),
+  brandName: z.string(),
+  squareIconUrl: z.string(),
+  fullLogoUrl: z.string(),
+  squareLoginImageUrl: z.string(),
+  socialSharingImageUrl: z.string(),
+  colorSidebarBackground: z.string(),
+  colorSidebarText: z.string(),
+  colorAccent: z.string(),
+  font: z.string(),
+  metaTitle: z.string(),
+  metaDescription: z.string(),
+});
+export type WorkspaceResponse = z.infer<typeof WorkspaceResponseSchema>;
+
 export const ClientResponseSchema = z.object({
   id: z.string(),
   givenName: z.string(),

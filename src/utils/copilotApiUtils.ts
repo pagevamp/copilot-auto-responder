@@ -12,6 +12,8 @@ import {
   InternalUsersResponseSchema,
   MeResponse,
   MeResponseSchema,
+  WorkspaceResponse,
+  WorkspaceResponseSchema,
 } from '@/types/common';
 
 export class CopilotAPI {
@@ -26,6 +28,10 @@ export class CopilotAPI {
 
   async me(): Promise<MeResponse> {
     return MeResponseSchema.parse(await this.copilot.getUserInfo());
+  }
+
+  async getWorkspace(): Promise<WorkspaceResponse> {
+    return await WorkspaceResponseSchema.parse(await this.copilot.getWorkspaceInfo());
   }
 
   async getClient(clientId: string): Promise<ClientResponse> {

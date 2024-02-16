@@ -14,6 +14,11 @@ export function errorHandler(message: string, status: number = 200) {
   );
 }
 
+export async function getWorkspace(apiToken: string) {
+  const copilotClient = new CopilotAPI(apiToken);
+  return await copilotClient.getWorkspace();
+}
+
 export async function getCurrentUser(apiToken: string): Promise<MeResponse> {
   const copilotClient = new CopilotAPI(apiToken);
   return await copilotClient.me();
