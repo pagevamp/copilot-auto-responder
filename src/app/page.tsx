@@ -23,9 +23,10 @@ async function getContent(searchParams: SearchParams) {
   }
 
   const copilotAPI = new CopilotAPI(z.string().parse(searchParams.token));
-  const result: { client?: ClientResponse; company?: CompanyResponse; me?: MeResponse } = {};
+  const result: { client?: ClientResponse; company?: CompanyResponse; me?: MeResponse; currentUserId?: string } = {};
 
   result.me = await copilotAPI.me();
+  result.currentUserId = (await copilotAPI.getTokenPayload())?.internalUserId;
 
   if (searchParams.clientId && typeof searchParams.clientId === 'string') {
     result.client = await copilotAPI.getClient(searchParams.clientId);
@@ -38,7 +39,7 @@ async function getContent(searchParams: SearchParams) {
   return result;
 }
 
-const populateSettingsFormData = (settings: SettingResponse, me?: MeResponse): SettingsData => {
+const populateSettingsFormData = (settings: SettingResponse, currentUserId?: string): SettingsData => {
   return {
     autoRespond: settings?.type || $Enums.SettingType.DISABLED,
     response: settings?.message || null,
@@ -49,7 +50,7 @@ const populateSettingsFormData = (settings: SettingResponse, me?: MeResponse): S
       endHour: workingHour.endTime as HOUR,
     })),
     // If no senderId in settings (like in new workspace), default to current user
-    senderId: settings?.senderId || me?.id || '',
+    senderId: settings?.senderId || currentUserId || '',
   };
 };
 
@@ -59,7 +60,7 @@ async function getInternalUsers(token: string): Promise<InternalUsers> {
 }
 
 export default async function Page({ searchParams }: { searchParams: SearchParams }) {
-  const { me } = await getContent(searchParams);
+  const { me, currentUserId } = await getContent(searchParams);
   const internalUsers = await getInternalUsers(searchParams.token as string);
 
   let internalUsersWithClientAccessLimitedFalse: InternalUsers = { data: [] };
@@ -94,7 +95,7 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
       <AutoResponder
         onSave={saveSettings}
         activeSettings={{
-          ...populateSettingsFormData(setting as SettingResponse, me),
+          ...populateSettingsFormData(setting as SettingResponse, currentUserId),
         }}
         internalUsers={internalUsersWithClientAccessLimitedFalse}
       />
