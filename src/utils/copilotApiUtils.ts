@@ -8,26 +8,40 @@ import {
   ClientResponseSchema,
   CompanyResponse,
   CompanyResponseSchema,
+  InternalUsersResponseSchema,
   MeResponse,
   MeResponseSchema,
+  Token,
+  TokenSchema,
 } from '@/types/common';
 
+type SDK = typeof Copilot & { getTokenPayload?: () => Promise<Token> };
+
 export class CopilotAPI {
-  copilot: typeof Copilot;
+  copilot: SDK;
 
   constructor(apiToken: string) {
     this.copilot = copilotApi({
       apiKey: appConfig.copilotApiKey,
-      token: apiToken,
+      tokenString: apiToken,
     });
   }
 
   async me(): Promise<MeResponse> {
-    return MeResponseSchema.parse(await this.copilot.getUserAndPortalInfo());
+    return MeResponseSchema.parse(await this.copilot.getUserInfo());
   }
 
   async getClient(clientId: string): Promise<ClientResponse> {
     return ClientResponseSchema.parse(await this.copilot.retrieveAClient({ id: clientId }));
+  }
+
+  async getInternalUsers() {
+    return InternalUsersResponseSchema.parse(await this.copilot.listInternalUsers({}));
+  }
+
+  async getTokenPayload() {
+    const tokenPayload = await this.copilot.getTokenPayload?.();
+    return tokenPayload ? TokenSchema.parse(tokenPayload) : null;
   }
 
   async getCompany(companyId: string): Promise<CompanyResponse> {

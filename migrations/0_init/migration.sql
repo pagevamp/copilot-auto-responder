@@ -10,10 +10,21 @@ CREATE TABLE "Setting" (
     "createdById" UUID NOT NULL,
     "message" TEXT,
     "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
 
     CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "Setting_createdById_key" ON "Setting"("createdById");
+-- CreateTable
+CREATE TABLE "Message" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "message" TEXT NOT NULL,
+    "clientId" UUID NOT NULL,
+    "channelId" UUID NOT NULL,
+    "senderId" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
+);
+

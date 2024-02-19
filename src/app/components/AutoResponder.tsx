@@ -1,4 +1,5 @@
 'use client';
+
 import { z } from 'zod';
 import { useEffect, useRef, useState } from 'react';
 import TimezoneSelect, { ITimezone } from 'react-timezone-select';
@@ -24,6 +25,8 @@ import {
   SelectedDay,
   SettingsData,
 } from '@/constants';
+import { InternalUser, InternalUsers } from '@/types/common';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 const defaultSelectedDays: SelectedDay[] = [
   {
@@ -56,7 +59,9 @@ const defaultSelectedDays: SelectedDay[] = [
 interface Props {
   onSave(data: SettingsData): Promise<void>;
   activeSettings: SettingsData;
+  internalUsers: InternalUsers;
 }
+
 const DropdownIndicator = (props: DropdownIndicatorProps<ITimezone, false, GroupBase<ITimezone>>) => {
   return (
     <components.DropdownIndicator {...props}>
@@ -145,10 +150,10 @@ const ValidationSchema = z.object({
     .min(10, "Response can't be less than 10 characters long")
     .max(2000, "Response can't be more than 2000 characters long")
     .nullable(),
-  sender: z.string(),
+  senderId: z.string().uuid().nullable(),
 });
 
-const AutoResponder = ({ onSave, activeSettings }: Props) => {
+const AutoResponder = ({ onSave, activeSettings, internalUsers }: Props) => {
   const defaultFormValues = useRef(activeSettings);
   const [saving, setSaving] = useState(false);
   const [workingHoursErrors, setWorkingHoursErrors] = useState<Record<number, string>>({});
@@ -261,6 +266,8 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
     setWorkingHoursErrors({});
   };
 
+  console.log(errors);
+
   return (
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <FormProvider {...methods}>
@@ -335,11 +342,38 @@ const AutoResponder = ({ onSave, activeSettings }: Props) => {
                     {errors.response && <p className="text-red-500 text-xs">{errors.response.message}</p>}
                   </div>
                   <Typography text="Sent by" variant="label" className="mb-1.5 mt-6" />
-                  <input
-                    disabled
-                    placeholder="Your name"
-                    className="block w-full p-3 text-[14px] font-normal rounded-md bg-transparent border border-border-disabled mb-8 disabled:text-text-disabled"
-                    {...register('sender')}
+                  <Controller
+                    name="senderId"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        fullWidth
+                        labelId="internal-users-select-label"
+                        id="internal-users-select"
+                        value={value}
+                        label=""
+                        onChange={(e: SelectChangeEvent) => {
+                          onChange(e.target.value);
+                        }}
+                        sx={{
+                          '& .MuiOutlinedInput-input': {
+                            padding: '6px 12px',
+                          },
+                          '.MuiOutlinedInput-notchedOutline': {
+                            borderColor: 'rgb(201 203 205)',
+                          },
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C9CBCD',
+                          },
+                          '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#C9CBCD',
+                          },
+                        }}
+                      >
+                        {internalUsers.data?.map((user: InternalUser) => {
+                          return <MenuItem key={user.id} value={user.id}>{`${user.givenName} ${user.familyName}`}</MenuItem>;
+                        })}
+                      </Select>
+                    )}
                   />
                 </Fieldset>
               )}
