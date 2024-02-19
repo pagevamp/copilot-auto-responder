@@ -90,8 +90,6 @@ export default async function Page({ searchParams }: { searchParams: SearchParam
     });
   };
 
-  console.log('VERSION', process.version);
-
   return (
     <main className="h-full">
       <AutoResponder
